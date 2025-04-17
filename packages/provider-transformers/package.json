@@ -1,0 +1,75 @@
+{
+  "name": "@xsai-ext/provider-transformers",
+  "type": "module",
+  "private": true,
+  "description": "Transformers.js wrapper makes it easy to use with xsai",
+  "author": {
+    "name": "Moeru AI",
+    "email": "neko@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/moeru-ai/xsai-transformers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
+    "directory": "packages/provider-transformers"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./worker": {
+      "types": "./dist/worker/index.d.ts",
+      "import": "./dist/worker/index.mjs"
+    }
+  },
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "unbuild && pnpm run play:build",
+    "dev": "pnpm run stub",
+    "play:build": "vite build",
+    "play:dev": "vite",
+    "play:preview": "vite preview",
+    "stub": "unbuild --stub",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "web-worker": "^1.5.0"
+  },
+  "peerDependenciesMeta": {
+    "web-worker": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.4.2",
+    "@webgpu/types": "^0.1.60",
+    "@xsai-ext-transformers/utils-transformers": "workspace:^",
+    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai/embed": "catalog:",
+    "@xsai/shared": "catalog:",
+    "defu": "^6.1.4",
+    "es-toolkit": "^1.34.1",
+    "unplugin-vue-router": "^0.12.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@iconify-json/solar": "^1.2.2",
+    "@unocss/reset": "^66.1.0-beta.10",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vueuse/core": "^13.0.0",
+    "superjson": "^2.2.2",
+    "vite": "^6.2.5",
+    "vue": "^3.5.13",
+    "vue-tsc": "^3.0.0-alpha.2"
+  }
+}

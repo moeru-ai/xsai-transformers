@@ -1,0 +1,32 @@
+# Logs
+logs
+*.log
+pnpm-debug.log*
+
+node_modules
+dist
+*.local
+.eslintcache
+
+# Editor directories and files
+.idea
+.DS_Store
+*.suo
+*.sln
+*.sw?
+
+# docs:generated content
+.content-collections
+.source
+
+# docs:test & build
+coverage
+.next
+out
+build
+*.tsbuildinfo
+
+# docs:others
+.env*.local
+.vercel
+next-env.d.ts

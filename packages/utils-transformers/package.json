@@ -1,0 +1,40 @@
+{
+  "name": "@xsai-ext-transformers/utils-transformers",
+  "type": "module",
+  "private": true,
+  "description": "Utility functions and types for Transformers.js",
+  "author": {
+    "name": "Moeru AI",
+    "email": "neko@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/moeru-ai/xsai-transformers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
+    "directory": "packages/utils-transformers"
+  },
+  "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
+  "exports": {
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "README.md",
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "pnpm run stub",
+    "stub": "unbuild --stub",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.4.2",
+    "onnxruntime-common": "^1.21.0"
+  }
+}
