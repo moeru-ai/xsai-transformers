@@ -1,7 +1,7 @@
 [build]
 base = "/"
-command = "pnpm -F @proj-airi/provider-transformers... run build"
-publish = "/packages/provider-transformers/playground/dist"
+command = "pnpm -F @xsai-ext-transformers/provider-playground... run build"
+publish = "/playground/dist"
 
 [build.environment]
 NODE_VERSION = "23"

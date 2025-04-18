@@ -17,10 +17,18 @@
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.d.ts"
+    },
     "./types": {
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "default": "./dist/types/index.d.ts"
     }
   },
+  "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
     "README.md",
@@ -29,7 +37,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "pnpm run stub",
+    "dev": "unbuild --stub",
     "stub": "unbuild --stub",
     "typecheck": "tsc --noEmit"
   },

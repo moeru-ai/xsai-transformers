@@ -13,7 +13,8 @@
       "vite/client",
       // @webgpu/types
       // https://www.npmjs.com/package/@webgpu/types
-      "@webgpu/types"
+      "@webgpu/types",
+      "unplugin-vue-router/client"
     ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -24,6 +25,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.mts"
+    "src/**/*.mts",
+    "src/**/*.vue"
   ]
 }

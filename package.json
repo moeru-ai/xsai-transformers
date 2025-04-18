@@ -1,19 +1,17 @@
 {
-  "name": "@xsai-ext/provider-transformers",
+  "name": "@xsai-ext-transformers/root",
   "type": "module",
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "repository": "github:moeru-ai/xsai-transformers",
   "scripts": {
-    "build": "pnpm -rF=\"./packages/*\" run build",
-    "dev": "pnpm -rF=\"./packages/*\" run --parallel dev",
+    "dev": "pnpm -rF=\"./packages/*\" -rF=\"./playground/*\" run --parallel dev",
+    "build": "pnpm -rF=\"./packages/*\" -rF=\"./playground/*\" run build",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",
     "packages:build": "pnpm -rF=\"./packages/*\" run build",
-    "packages:dev": "pnpm -rF=\"./packages/*\" --parallel run dev",
-    "packages:stub": "pnpm -rF=\"./packages/*\" run --parallel stub",
     "postinstall": "npx simple-git-hooks && pnpm packages:build",
     "sizecheck": "npx vite-bundle-visualizer",
     "test": "vitest --coverage",
@@ -45,7 +43,8 @@
     "vitest": "^3.1.1"
   },
   "workspaces": [
-    "packages/**"
+    "packages/**",
+    "playground"
   ],
   "pnpm": {
     "onlyBuiltDependencies": [
