@@ -1,13 +1,11 @@
 import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-ext-transformers/utils-transformers/types'
+import type { LoadOptions, ProgressInfo } from '@xsai-transformers/utils/types'
 
 export enum MessageStatus {
   Loading = 'loading',
   Ready = 'ready',
 }
 
-export type LoadOptions = Omit<PretrainedOptions & ModelSpecificPretrainedOptions, 'progress_callback'> & { onProgress?: LoadOptionProgressCallback } & FeatureExtractionPipelineOptions
-export type LoadOptionProgressCallback = (progress: ProgressInfo) => void | Promise<void>
 export type { ProgressInfo }
 
 export interface WorkerMessageBaseEvent<T, D> {
@@ -15,11 +13,11 @@ export interface WorkerMessageBaseEvent<T, D> {
   data: D
 }
 
-export interface WorkerMessageEvents {
+export interface WorkerMessageEvents<T = FeatureExtractionPipelineOptions> {
   load: {
     task: string
     modelId: string
-    options?: LoadOptions
+    options?: LoadOptions<T>
   }
   error: {
     error?: unknown

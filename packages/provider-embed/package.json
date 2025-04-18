@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/provider-embed",
   "type": "module",
-  "private": true,
+  "version": "0.0.1",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
-    "directory": "packages/embed"
+    "directory": "packages/provider-embed"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
   "exports": {

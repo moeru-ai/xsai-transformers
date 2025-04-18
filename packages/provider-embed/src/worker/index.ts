@@ -1,19 +1,19 @@
 /* eslint-disable no-restricted-globals */
 import type { FeatureExtractionPipeline, FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { PipelineOptionsFrom } from '@xsai-ext-transformers/utils-transformers/types'
+import type { PipelineOptionsFrom } from '@xsai-transformers/utils/types'
 import type { WorkerMessageEvent } from '../types'
 
 import { pipeline } from '@huggingface/transformers'
 import { defu } from 'defu'
 
 import { MessageStatus } from '../types'
-import { supportsWebGPU } from '../utils'
+import { isWebGPUSupported } from '../utils'
 
 let embed: FeatureExtractionPipeline
 
 async function load(modelId: string, options?: Omit<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>, 'progress_callback'>) {
   try {
-    const device = (await supportsWebGPU()) ? 'webgpu' : 'wasm'
+    const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
 
     const opts = defu<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>, PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>[]>(options, {
       device,

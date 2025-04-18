@@ -1,17 +1,21 @@
+import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
 import type { CreateProviderOptions, EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
+import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/utils/types'
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
-import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './types'
+import type { WorkerMessageEvent } from './types'
 
-import { merge } from '@xsai-ext/shared-providers'
 import defu from 'defu'
 
-export type Loadable<P, T = string, T2 = undefined> = P & {
+export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
   loadEmbed: (model: (string & {}) | T, options?: T2) => Promise<void>
   terminateEmbed: () => void
 }
 
-function createEmbedProvider<T extends string, T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions>(createOptions: CreateProviderOptions): Loadable<EmbedProviderWithExtraOptions<T, T2>, T, T2> {
+export function createEmbedProvider<
+  T extends string,
+  T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions<FeatureExtractionPipelineOptions>,
+>(createOptions: CreateProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> {
   let worker: Worker
   let isReady = false
 
@@ -75,7 +79,7 @@ function createEmbedProvider<T extends string, T2 extends Omit<CommonRequestOpti
             })
 
             let text: string = ''
-            let body: LoadOptions & { input: string }
+            let body: LoadOptions<FeatureExtractionPipelineOptions> & { input: string }
 
             try {
               body = JSON.parse(init.body.toString())
@@ -101,7 +105,21 @@ function createEmbedProvider<T extends string, T2 extends Omit<CommonRequestOpti
                   resultDone = true
 
                   // eslint-disable-next-line no-case-declarations
-                  const result = { data: [{ embedding: event.data.data.output.data, index: 0, object: 'embedding' }], model, object: 'list', usage: { prompt_tokens: 0, total_tokens: 0 } } satisfies EmbedResponse
+                  const result = {
+                    data: [
+                      {
+                        embedding: event.data.data.output.data,
+                        index: 0,
+                        object: 'embedding',
+                      },
+                    ],
+                    model,
+                    object: 'list',
+                    usage: {
+                      prompt_tokens: 0,
+                      total_tokens: 0,
+                    },
+                  } satisfies EmbedResponse
                   // eslint-disable-next-line no-case-declarations
                   const encoder = new TextEncoder()
 
@@ -112,7 +130,7 @@ function createEmbedProvider<T extends string, T2 extends Omit<CommonRequestOpti
             })
 
             if (!errored && !resultDone)
-              worker.postMessage({ type: 'extract', data: { text, options: defu<LoadOptions, LoadOptions[]>(options, { pooling: 'mean', normalize: true }) } } satisfies WorkerMessageEvent)
+              worker.postMessage({ type: 'extract', data: { text, options: defu<LoadOptions<FeatureExtractionPipelineOptions>, LoadOptions<FeatureExtractionPipelineOptions>[]>(options, { pooling: 'mean', normalize: true }) } } satisfies WorkerMessageEvent)
           })
         })
       },
@@ -125,10 +143,4 @@ function createEmbedProvider<T extends string, T2 extends Omit<CommonRequestOpti
       }
     },
   }
-}
-
-export function createTransformers(options: { embedWorkerURL: string }) {
-  return merge(
-    createEmbedProvider<'Xenova/all-MiniLM-L6-v2', Omit<CreateProviderOptions, 'baseURL'> & LoadOptions>({ baseURL: `xsai-provider-ext:///?worker-url=${options.embedWorkerURL}&other=true` }),
-  )
 }

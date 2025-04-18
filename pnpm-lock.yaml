@@ -122,6 +122,84 @@ importers:
         specifier: workspace:^
         version: link:../utils
 
+  packages/provider-speech:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.4.2
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/embed':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+      '@xsai-transformers/utils':
+        specifier: workspace:^
+        version: link:../utils
+
+  packages/providers:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.4.2
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai-transformers/provider-embed':
+        specifier: workspace:^
+        version: link:../provider-embed
+      '@xsai/embed':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+      '@xsai-transformers/utils':
+        specifier: workspace:^
+        version: link:../utils
+
+  packages/shared:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.4.2
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+
   packages/utils:
     dependencies:
       '@huggingface/transformers':
