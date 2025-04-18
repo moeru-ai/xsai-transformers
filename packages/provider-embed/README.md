@@ -1,4 +1,4 @@
-# `@proj-airi/provider-transformers`
+# `@xsai-transformers/provider-embed`
 
 Experimental provider implementation of [🤗 Transformers.js](https://github.com/huggingface/transformers.js) for [xsai](https://github.com/moeru-ai/xsai).
 
@@ -8,20 +8,26 @@ This enables you possibilities to use any models supported by [🤗 Transformers
 
 > [!WARNING]
 >
-> This haven't been released yet, it is currently only used by [Airi](https://github.com/moeru-ai/airi)'s stage and memory layer, if you found this helpful, join us to discuss on [xsai #41](https://github.com/moeru-ai/xsai/issues/41).
+> This haven't been released yet, it is currently only used by [Project AIRI](https://github.com/moeru-ai/airi)'s stage and memory layer, if you found this helpful, join us to discuss on [xsai #41](https://github.com/moeru-ai/xsai/issues/41).
 
 ## Example usage
 
+```shell
+ni @xsai-transformers/provider-embed -D # from @antfu/ni, can be installed via `npm i -g @antfu/ni`
+pnpm i @xsai-transformers/provider-embed -D
+yarn i @xsai-transformers/provider-embed -D
+npm i @xsai-transformers/provider-embed -D
+```
+
 ```ts
-// Currently @proj-airi/provider-transformers
-import { createTransformers } from '@xsai-ext/provider-transformers'
-import EmbedWorkerURL from '@xsai-ext/provider-transformers/worker?worker&url'
+import { createEmbedProvider } from '@xsai-transformers/provider-embed'
+import EmbedWorkerURL from '@xsai-transformers/provider-embed/worker?worker&url'
 import { embed } from '@xsai/embed'
 
-const transformersProvider = createTransformers({ embedWorkerURL: EmbedWorkerURL })
+const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
 
 const res = await embed({
-  ...transformersProvider.embed('Xenova/all-MiniLM-L6-v2'),
+  ...embedProvider.embed('Xenova/all-MiniLM-L6-v2'),
   input: 'Hello, world!',
 })
 

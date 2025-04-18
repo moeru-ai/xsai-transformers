@@ -1,29 +1,28 @@
 <script setup lang="ts">
-import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-ext-transformers/utils-transformers/types'
+import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/utils/types'
 
 import { embed } from '@xsai/embed'
 import { serialize } from 'superjson'
 import { onMounted, ref } from 'vue'
 
-import { createTransformers } from '@xsai-ext/provider-transformers'
-import embedWorkerURL from '@xsai-ext/provider-transformers/worker?worker&url'
+import { createEmbedProvider } from '@xsai-transformers/provider-embed'
+import embedWorkerURL from '@xsai-transformers/provider-embed/worker?worker&url'
 import Progress from '../components/Progress.vue'
 
 const modelId = ref('Xenova/all-MiniLM-L6-v2')
 const input = ref('Hello, world!')
 const results = ref<any>()
-
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
 const loadingItemsSet = new Set<string>()
 
-const transformersProvider = createTransformers({ embedWorkerURL })
+const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
 
 onMounted(async () => {
   await load()
 })
 
 async function load() {
-  await transformersProvider.loadEmbed(modelId.value, {
+  await embedProvider.loadEmbed(modelId.value, {
     onProgress: (progress) => {
       switch (progress.status) {
         case 'initiate':
@@ -56,7 +55,7 @@ async function load() {
 
 async function execute() {
   const result = await embed({
-    ...transformersProvider.embed(modelId.value),
+    ...embedProvider.embed(modelId.value),
     input: input.value,
   })
 
@@ -64,7 +63,7 @@ async function execute() {
 }
 
 async function handleLoad() {
-  await transformersProvider.terminateEmbed()
+  await embedProvider.terminateEmbed()
   await load()
 }
 </script>
