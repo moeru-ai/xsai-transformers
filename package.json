@@ -1,13 +1,13 @@
 {
-  "name": "@xsai-ext-transformers/root",
+  "name": "@xsai-transformers/root",
   "type": "module",
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@10.0.0",
   "repository": "github:moeru-ai/xsai-transformers",
   "scripts": {
-    "dev": "pnpm -rF=\"./packages/*\" -rF=\"./playground/*\" run --parallel dev",
-    "build": "pnpm -rF=\"./packages/*\" -rF=\"./playground/*\" run build",
+    "dev": "pnpm run packages:build && pnpm -r -F=\"./playground\" run dev",
+    "build": "pnpm -r -F=\"./playground\" run build",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",

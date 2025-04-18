@@ -1,5 +1,5 @@
 {
-  "name": "@xsai-ext-transformers/provider-playground",
+  "name": "@xsai-transformers/playground",
   "type": "module",
   "private": true,
   "description": "Transformers.js wrapper makes it easy to use with xsai",
@@ -30,9 +30,9 @@
     "@vitejs/plugin-vue": "^5.2.3",
     "@vueuse/core": "^13.0.0",
     "@webgpu/types": "^0.1.60",
-    "@xsai-ext-transformers/utils-transformers": "workspace:^",
-    "@xsai-ext/provider-transformers": "workspace:^",
     "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-transformers/provider-embed": "workspace:^",
+    "@xsai-transformers/utils": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4",

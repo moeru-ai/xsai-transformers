@@ -94,7 +94,7 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(yaml@2.7.1)
 
-  packages/provider-transformers:
+  packages/provider-embed:
     dependencies:
       '@huggingface/transformers':
         specifier: ^3.4.2
@@ -118,11 +118,11 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-ext-transformers/utils-transformers':
+      '@xsai-transformers/utils':
         specifier: workspace:^
-        version: link:../utils-transformers
+        version: link:../utils
 
-  packages/utils-transformers:
+  packages/utils:
     dependencies:
       '@huggingface/transformers':
         specifier: ^3.4.2
@@ -157,15 +157,15 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-ext-transformers/utils-transformers':
-        specifier: workspace:^
-        version: link:../packages/utils-transformers
-      '@xsai-ext/provider-transformers':
-        specifier: workspace:^
-        version: link:../packages/provider-transformers
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      '@xsai-transformers/provider-embed':
+        specifier: workspace:^
+        version: link:../packages/provider-embed
+      '@xsai-transformers/utils':
+        specifier: workspace:^
+        version: link:../packages/utils
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
