@@ -22,8 +22,8 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@xsai-transformers/provider-embed": "workspace:^",
-    "@xsai-transformers/provider-transcribe": "workspace:^",
+    "@xsai-transformers/embed": "workspace:^",
+    "@xsai-transformers/transcription": "workspace:^",
     "@xsai/generate-transcription": "catalog:"
   },
   "devDependencies": {
@@ -37,7 +37,7 @@
     "@vueuse/core": "^13.0.0",
     "@webgpu/types": "^0.1.60",
     "@xsai-ext/shared-providers": "catalog:",
-    "@xsai-transformers/utils": "workspace:^",
+    "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4",

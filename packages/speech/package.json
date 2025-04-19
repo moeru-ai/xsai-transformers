@@ -1,8 +1,8 @@
 {
-  "name": "@xsai-transformers/utils",
+  "name": "@xsai-transformers/speech",
   "type": "module",
-  "version": "0.0.1",
-  "description": "Utility functions and types for Transformers.js",
+  "private": true,
+  "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
     "email": "neko@moeru.ai",
@@ -13,23 +13,21 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
-    "directory": "packages/utils-transformers"
+    "directory": "packages/speech"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "default": "./dist/index.d.ts"
+      "import": "./dist/index.mjs"
     },
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.mjs",
-      "default": "./dist/types/index.d.ts"
+    "./worker": {
+      "types": "./dist/worker/index.d.ts",
+      "import": "./dist/worker/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "README.md",
     "dist",
@@ -41,8 +39,23 @@
     "stub": "unbuild --stub",
     "typecheck": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "web-worker": "^1.5.0"
+  },
+  "peerDependenciesMeta": {
+    "web-worker": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@huggingface/transformers": "^3.4.2",
-    "onnxruntime-common": "^1.21.0"
+    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai/embed": "catalog:",
+    "@xsai/shared": "catalog:",
+    "defu": "^6.1.4"
+  },
+  "devDependencies": {
+    "@webgpu/types": "^0.1.60",
+    "@xsai-transformers/shared": "workspace:^"
   }
 }

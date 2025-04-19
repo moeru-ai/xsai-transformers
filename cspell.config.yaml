@@ -9,6 +9,7 @@ words:
   - crouchcd
   - defu
   - denoland
+  - dtypes
   - elysia
   - eslintcache
   - fumadocs
@@ -20,6 +21,7 @@ words:
   - masknet
   - modelcontextprotocol
   - moeru
+  - onnxruntime
   - PKCE
   - pkgroll
   - Pretrained

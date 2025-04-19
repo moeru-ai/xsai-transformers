@@ -1,7 +1,7 @@
 {
-  "name": "@xsai-transformers/provider-speech",
+  "name": "xsai-transformers",
   "type": "module",
-  "private": true,
+  "version": "0.0.1",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
@@ -13,17 +13,13 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
-    "directory": "packages/provider-speech"
+    "directory": "packages-top/xsai-transformers"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
-    },
-    "./worker": {
-      "types": "./dist/worker/index.d.ts",
-      "import": "./dist/worker/index.mjs"
     }
   },
   "module": "./dist/index.mjs",
@@ -50,12 +46,14 @@
   "dependencies": {
     "@huggingface/transformers": "^3.4.2",
     "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-transformers/embed": "workspace:^",
+    "@xsai-transformers/shared": "workspace:^",
+    "@xsai-transformers/transcription": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4"
   },
   "devDependencies": {
-    "@webgpu/types": "^0.1.60",
-    "@xsai-transformers/utils": "workspace:^"
+    "@webgpu/types": "^0.1.60"
   }
 }

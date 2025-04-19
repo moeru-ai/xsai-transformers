@@ -39,7 +39,8 @@
     "@huggingface/transformers": "^3.4.2",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai/shared": "catalog:",
-    "defu": "^6.1.4"
+    "defu": "^6.1.4",
+    "onnxruntime-common": "^1.21.0"
   },
   "devDependencies": {
     "@webgpu/types": "^0.1.60"

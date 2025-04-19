@@ -1,4 +1,4 @@
-# `@xsai-transformers/provider-embed`
+# `@xsai-transformers/embed`
 
 Experimental provider implementation of [🤗 Transformers.js](https://github.com/huggingface/transformers.js) for [xsai](https://github.com/moeru-ai/xsai).
 
@@ -13,15 +13,15 @@ This enables you possibilities to use any models supported by [🤗 Transformers
 ## Example usage
 
 ```shell
-ni @xsai-transformers/provider-embed -D # from @antfu/ni, can be installed via `npm i -g @antfu/ni`
-pnpm i @xsai-transformers/provider-embed -D
-yarn i @xsai-transformers/provider-embed -D
-npm i @xsai-transformers/provider-embed -D
+ni @xsai-transformers/embed -D # from @antfu/ni, can be installed via `npm i -g @antfu/ni`
+pnpm i @xsai-transformers/embed -D
+yarn i @xsai-transformers/embed -D
+npm i @xsai-transformers/embed -D
 ```
 
 ```ts
-import { createEmbedProvider } from '@xsai-transformers/provider-embed'
-import EmbedWorkerURL from '@xsai-transformers/provider-embed/worker?worker&url'
+import { createEmbedProvider } from '@xsai-transformers/embed'
+import EmbedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import { embed } from '@xsai/embed'
 
 const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })

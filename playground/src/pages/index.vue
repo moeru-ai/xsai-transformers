@@ -5,8 +5,8 @@ import { embed } from '@xsai/embed'
 import { serialize } from 'superjson'
 import { onMounted, ref } from 'vue'
 
-import { createEmbedProvider } from '@xsai-transformers/provider-embed'
-import embedWorkerURL from '@xsai-transformers/provider-embed/worker?worker&url'
+import { createEmbedProvider } from '@xsai-transformers/embed'
+import embedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import Progress from '../components/Progress.vue'
 
 const modelId = ref('Xenova/all-MiniLM-L6-v2')

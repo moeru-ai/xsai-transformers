@@ -17,7 +17,7 @@ xsAI 🤗 Transformers.js Provider aligned the API of xsAI, this enables the pos
 ```ts
 import { env } from 'node:process'
 import { createEmbedProvider } from '@xsai-transformers/embed'
-import embedWorkerURL from '@xsai-transformers/provider-embed/worker?worker&url'
+import embedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import { embed } from '@xsai/embed'
 
 const providerOpenAI = {

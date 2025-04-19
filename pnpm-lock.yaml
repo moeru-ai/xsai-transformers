@@ -97,7 +97,41 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(yaml@2.7.1)
 
-  packages/provider-embed:
+  packages-top/xsai-transformers:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.4.2
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai-transformers/embed':
+        specifier: workspace:^
+        version: link:../../packages/embed
+      '@xsai-transformers/shared':
+        specifier: workspace:^
+        version: link:../../packages/shared
+      '@xsai-transformers/transcription':
+        specifier: workspace:^
+        version: link:../../packages/transcription
+      '@xsai/embed':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+
+  packages/embed:
     dependencies:
       '@huggingface/transformers':
         specifier: ^3.4.2
@@ -121,11 +155,33 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/utils':
+      '@xsai-transformers/shared':
         specifier: workspace:^
-        version: link:../utils
+        version: link:../shared
 
-  packages/provider-speech:
+  packages/shared:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.4.2
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      onnxruntime-common:
+        specifier: ^1.21.0
+        version: 1.21.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+
+  packages/speech:
     dependencies:
       '@huggingface/transformers':
         specifier: ^3.4.2
@@ -149,11 +205,11 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/utils':
+      '@xsai-transformers/shared':
         specifier: workspace:^
-        version: link:../utils
+        version: link:../shared
 
-  packages/provider-transcribe:
+  packages/transcription:
     dependencies:
       '@huggingface/transformers':
         specifier: ^3.5.0
@@ -183,77 +239,18 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/utils':
+      '@xsai-transformers/shared':
         specifier: workspace:*
-        version: link:../utils
-
-  packages/providers:
-    dependencies:
-      '@huggingface/transformers':
-        specifier: ^3.4.2
-        version: 3.5.0
-      '@xsai-ext/shared-providers':
-        specifier: 'catalog:'
-        version: 0.2.0-beta.3
-      '@xsai-transformers/provider-embed':
-        specifier: workspace:^
-        version: link:../provider-embed
-      '@xsai-transformers/utils':
-        specifier: workspace:^
-        version: link:../utils
-      '@xsai/embed':
-        specifier: 'catalog:'
-        version: 0.2.0-beta.3
-      '@xsai/shared':
-        specifier: 'catalog:'
-        version: 0.2.0-beta.3
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
-      web-worker:
-        specifier: ^1.5.0
-        version: 1.5.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
-
-  packages/shared:
-    dependencies:
-      '@huggingface/transformers':
-        specifier: ^3.4.2
-        version: 3.5.0
-      '@xsai-ext/shared-providers':
-        specifier: 'catalog:'
-        version: 0.2.0-beta.3
-      '@xsai/shared':
-        specifier: 'catalog:'
-        version: 0.2.0-beta.3
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
-
-  packages/utils:
-    dependencies:
-      '@huggingface/transformers':
-        specifier: ^3.4.2
-        version: 3.5.0
-      onnxruntime-common:
-        specifier: ^1.21.0
-        version: 1.21.0
+        version: link:../shared
 
   playground:
     dependencies:
-      '@xsai-transformers/provider-embed':
+      '@xsai-transformers/embed':
         specifier: workspace:^
-        version: link:../packages/provider-embed
-      '@xsai-transformers/provider-transcribe':
+        version: link:../packages/embed
+      '@xsai-transformers/transcription':
         specifier: workspace:^
-        version: link:../packages/provider-transcribe
+        version: link:../packages/transcription
       '@xsai/generate-transcription':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -288,9 +285,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
-      '@xsai-transformers/utils':
+      '@xsai-transformers/shared':
         specifier: workspace:^
-        version: link:../packages/utils
+        version: link:../packages/shared
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
