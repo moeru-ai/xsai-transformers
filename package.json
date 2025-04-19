@@ -7,7 +7,7 @@
   "repository": "github:moeru-ai/xsai-transformers",
   "scripts": {
     "dev": "pnpm run packages:build && pnpm -r -F=\"./playground\" run dev",
-    "build": "pnpm -r -F=\"./playground\" run build",
+    "build": "pnpm run packages:build && pnpm -r -F=\"./playground\" run build",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",
