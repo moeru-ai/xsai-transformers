@@ -4,8 +4,8 @@ import { ref } from 'vue'
 
 import Progress from '../components/Progress.vue'
 import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/utils/types'
-import createTransformers from '@xsai-transformers/provider-transcribe'
-import transcribeWorkerURL from '@xsai-transformers/provider-transcribe/worker/transcribe?worker&url'
+import { createTransformers } from '@xsai-transformers/provider-transcribe'
+import transcribeWorkerURL from '@xsai-transformers/provider-transcribe/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
 
 const modelId = ref('onnx-community/whisper-large-v3-turbo')
@@ -167,10 +167,8 @@ function formatTime(seconds: number): string {
       </div>
     </div>
     <div v-if="loadingItems.length > 0" class="w-full flex flex-col gap-2">
-      <Progress
-        v-for="(item, index) of loadingItems" :key="index" :text="item.file"
-        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0"
-      />
+      <Progress v-for="(item, index) of loadingItems" :key="index" :text="item.file"
+        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0" />
     </div>
   </div>
   <div flex flex-col gap-2>
@@ -185,12 +183,8 @@ function formatTime(seconds: number): string {
           Recording
         </h3>
         <div flex flex-row items-center gap-4>
-          <button
-            rounded-lg
-            :bg="isRecording ? 'red-500 dark:red-700' : 'blue-100 dark:blue-900'"
-            px-4 py-2
-            @click="isRecording ? stopRecording() : startRecording()"
-          >
+          <button rounded-lg :bg="isRecording ? 'red-500 dark:red-700' : 'blue-100 dark:blue-900'" px-4 py-2
+            @click="isRecording ? stopRecording() : startRecording()">
             {{ isRecording ? 'Stop' : 'Start' }}
           </button>
 

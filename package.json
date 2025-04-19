@@ -12,6 +12,7 @@
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",
     "packages:build": "pnpm -rF=\"./packages/*\" run build",
+    "packages:stub": "pnpm -rF=\"./packages/*\" run stub",
     "postinstall": "npx simple-git-hooks",
     "sizecheck": "npx vite-bundle-visualizer",
     "test": "vitest --coverage",
