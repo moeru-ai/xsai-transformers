@@ -1,6 +1,6 @@
 # xsAI 🤗 Transformers.js Provider
 
-A special [🤗 Transformers.js](https://huggingface.co/docs/transformers.js/en/index) provider for [`xsai`](https://github.com/moeru-ai/xsai), the extra-small AI SDK. Capable of performing tasks of
+A special [Transformers.js](https://huggingface.co/docs/transformers.js/en/index) provider for [`xsai`](https://github.com/moeru-ai/xsai), the extra-small AI SDK. Capable of performing tasks of
 embedding, transcriptions, speech synthesis, and text generations right in the browser (Node.js supported too).
 
 <!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
