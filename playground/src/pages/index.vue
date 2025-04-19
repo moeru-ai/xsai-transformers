@@ -17,10 +17,6 @@ const loadingItemsSet = new Set<string>()
 
 const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
 
-onMounted(async () => {
-  await load()
-})
-
 async function load() {
   await embedProvider.loadEmbed(modelId.value, {
     onProgress: (progress) => {
