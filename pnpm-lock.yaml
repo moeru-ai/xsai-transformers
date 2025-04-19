@@ -12,6 +12,9 @@ catalogs:
     '@xsai/embed':
       specifier: ^0.2.0-beta.3
       version: 0.2.0-beta.3
+    '@xsai/generate-transcription':
+      specifier: ^0.2.0-beta.3
+      version: 0.2.0-beta.3
     '@xsai/shared':
       specifier: ^0.2.0-beta.3
       version: 0.2.0-beta.3
@@ -150,6 +153,40 @@ importers:
         specifier: workspace:^
         version: link:../utils
 
+  packages/provider-transcribe:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.5.0
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/embed':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/generate-transcription':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      gpuu:
+        specifier: ^1.0.0
+        version: 1.0.0
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+      '@xsai-transformers/utils':
+        specifier: workspace:*
+        version: link:../utils
+
   packages/providers:
     dependencies:
       '@huggingface/transformers':
@@ -161,6 +198,9 @@ importers:
       '@xsai-transformers/provider-embed':
         specifier: workspace:^
         version: link:../provider-embed
+      '@xsai-transformers/utils':
+        specifier: workspace:^
+        version: link:../utils
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -177,9 +217,6 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/utils':
-        specifier: workspace:^
-        version: link:../utils
 
   packages/shared:
     dependencies:
@@ -210,6 +247,13 @@ importers:
         version: 1.21.0
 
   playground:
+    dependencies:
+      '@xsai-transformers/provider-transcribe':
+        specifier: workspace:^
+        version: link:../packages/provider-transcribe
+      '@xsai/generate-transcription':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
     devDependencies:
       '@huggingface/transformers':
         specifier: ^3.4.2
@@ -1636,6 +1680,9 @@ packages:
   '@xsai/embed@0.2.0-beta.3':
     resolution: {integrity: sha512-L6CPADpbOB2nF6cPoHx2QuM98Z88s3RjL2A1+WUPvJHA7eTWen+/02saDYXYo2L/rQ4MGNRgr+tGxfk/3WkeJw==}
 
+  '@xsai/generate-transcription@0.2.0-beta.3':
+    resolution: {integrity: sha512-KhZjGpSctxw3JqSn8danLisY+lkgB7zbJ27yBIGNYTaDMY7ZzIizKH4pp9B4Khq0ujpf52zJzE/iLe9bL7vPSQ==}
+
   '@xsai/shared@0.2.0-beta.3':
     resolution: {integrity: sha512-bpp848WfOCmmkuSePe7czB5Vy1lZxNqV1pSX/N0gZVXxfBQC6wVqkjoScl17v13hsThDbqB6dyrN4ca3mwVBog==}
 
@@ -2516,6 +2563,9 @@ packages:
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
+
+  gpuu@1.0.0:
+    resolution: {integrity: sha512-8BpEnSniZsG34B8zZKxl/ZgNuh5VK+3EPzKgLJ4sezMmIkmUHxN2WY7Bj+7aTqvNBgbikP6sfWOIADHo+wAqiA==}
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -5388,6 +5438,10 @@ snapshots:
     dependencies:
       '@xsai/shared': 0.2.0-beta.3
 
+  '@xsai/generate-transcription@0.2.0-beta.3':
+    dependencies:
+      '@xsai/shared': 0.2.0-beta.3
+
   '@xsai/shared@0.2.0-beta.3': {}
 
   acorn-jsx@5.3.2(acorn@8.14.1):
@@ -6449,6 +6503,10 @@ snapshots:
       gopd: 1.2.0
 
   gopd@1.2.0: {}
+
+  gpuu@1.0.0:
+    dependencies:
+      defu: 6.1.4
 
   graceful-fs@4.2.11: {}
 

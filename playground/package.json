@@ -21,6 +21,10 @@
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit"
   },
+  "dependencies": {
+    "@xsai-transformers/provider-transcribe": "workspace:^",
+    "@xsai/generate-transcription": "catalog:"
+  },
   "devDependencies": {
     "@huggingface/transformers": "^3.4.2",
     "@iconify-json/simple-icons": "^1.2.32",
