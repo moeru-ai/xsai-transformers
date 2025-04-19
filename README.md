@@ -113,5 +113,3 @@ xsAI [🤗 Transformers.js](https://huggingface.co/docs/transformers.js/en/index
 ## License
 
 [MIT](LICENSE.md)
-
-Moeru AI / xsAI is not affiliated with OpenAI.
