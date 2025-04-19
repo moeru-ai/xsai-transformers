@@ -7,6 +7,8 @@ import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformer
 import { createTransformers } from '@xsai-transformers/provider-transcribe'
 import transcribeWorkerURL from '@xsai-transformers/provider-transcribe/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
+import { toWav } from '../libs/vad/wav'
+import processWorkletURL from '../libs/vad/process.worklet.ts?worker&url'
 
 const modelId = ref('onnx-community/whisper-large-v3-turbo')
 
@@ -93,38 +95,107 @@ function handleFileChange(event: Event) {
 
 async function startRecording() {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    mediaRecorder.value = new MediaRecorder(stream)
-    audioChunks.value = []
-    recordingTime.value = 0
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        channelCount: 1,
+        sampleRate: 16000
+      }
+    })
 
-    // Recording time timer
+    // Create AudioContext with desired sample rate
+    const audioContext = new AudioContext({ sampleRate: 16000 })
+    const source = audioContext.createMediaStreamSource(stream)
+    
+    // Load and register the VAD worklet processor
+    await audioContext.audioWorklet.addModule(processWorkletURL)
+    const workletNode = new AudioWorkletNode(audioContext, 'vad-processor')
+    
+    const pcmChunks: Float32Array[] = []
+    const segments = ref<Array<{
+      buffer: Float32Array,
+      duration: number,
+      timestamp: number,
+      audioSrc: string
+    }>>([])
+
+    // Handle audio data from the worklet
+    workletNode.port.onmessage = (event) => {
+      const { buffer } = event.data
+      if (!buffer) return
+      
+      // Create a copy of the buffer
+      const chunk = new Float32Array(buffer.length)
+      chunk.set(buffer)
+      pcmChunks.push(chunk)
+      
+      // Calculate duration in seconds
+      const duration = (buffer.length / audioContext.sampleRate)
+      
+      // Convert to WAV for playback
+      const wavBuffer = toWav(buffer, 16000)
+      const audioBlob = new Blob([wavBuffer], { type: 'audio/wav' })
+
+      // Store the segment
+      segments.value.push({
+        buffer: chunk,
+        duration,
+        timestamp: Date.now(),
+        audioSrc: URL.createObjectURL(audioBlob),
+      })
+    }
+
+    // Connect the audio processing pipeline
+    source.connect(workletNode)
+    workletNode.connect(audioContext.destination)
+
+    // Store references for cleanup
+    mediaRecorder.value = {
+      stream,
+      audioContext,
+      source,
+      workletNode,
+      pcmChunks,
+      stop: () => {
+        workletNode.disconnect()
+        source.disconnect()
+
+        // Combine all chunks
+        const totalLength = pcmChunks.reduce((acc, chunk) => acc + chunk.length, 0)
+        const combinedBuffer = new Float32Array(totalLength)
+
+        let offset = 0
+        for (const chunk of pcmChunks) {
+          combinedBuffer.set(chunk, offset)
+          offset += chunk.length
+        }
+
+        // Convert to WAV
+        const wavArrayBuffer = toWav(combinedBuffer, 16000)
+        const audioBlob = new Blob([wavArrayBuffer], { type: 'audio/wav' })
+
+        if (audioURL.value)
+          URL.revokeObjectURL(audioURL.value)
+        audioURL.value = URL.createObjectURL(audioBlob)
+
+        // Convert to File object
+        const fileName = `recording_${new Date().toISOString()}.wav`
+        const file = new File([audioBlob], fileName, { type: 'audio/wav' })
+        input.value = file
+
+        // Clean up
+        if (recordingTimer.value) {
+          clearInterval(recordingTimer.value)
+          recordingTimer.value = null
+        }
+      }
+    } as any
+
+    // Start recording timer
+    recordingTime.value = 0
     recordingTimer.value = window.setInterval(() => {
       recordingTime.value += 1
     }, 1000)
 
-    mediaRecorder.value.ondataavailable = (event) => {
-      audioChunks.value.push(event.data)
-    }
-
-    mediaRecorder.value.onstop = () => {
-      if (recordingTimer.value) {
-        clearInterval(recordingTimer.value)
-        recordingTimer.value = null
-      }
-
-      const audioBlob = new Blob(audioChunks.value, { type: 'audio/wav' })
-      if (audioURL.value)
-        URL.revokeObjectURL(audioURL.value)
-      audioURL.value = URL.createObjectURL(audioBlob)
-
-      // Convert recorded audio to File object
-      const fileName = `recording_${new Date().toISOString()}.wav`
-      const file = new File([audioBlob], fileName, { type: 'audio/wav' })
-      input.value = file
-    }
-
-    mediaRecorder.value.start(100) // Collect data every 100ms
     isRecording.value = true
   }
   catch (error) {
