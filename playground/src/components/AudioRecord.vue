@@ -7,7 +7,6 @@ import InputFile from './InputFile.vue'
 const model = defineModel<File | null>({ required: true })
 
 const isRecording = ref<boolean>(false)
-const audioChunks = ref<Blob[]>([])
 const mediaRecorder = ref<MediaRecorder | null>(null)
 const recordingTime = ref<number>(0)
 const recordingTimer = ref<number | null>(null)
@@ -165,17 +164,9 @@ function formatTime(seconds: number): string {
       <div class="flex flex-row items-center gap-4">
         <button 
           :disabled="model && !audioURL && !isRecording"
-          class="transition-all duration-200 font-medium flex items-center justify-center gap-2 rounded-lg px-6 py-3 shadow-sm"
-          :class="[
-            isRecording 
-              ? 'bg-red-500 hover:bg-red-600 text-white' 
-              : 'bg-blue-500 hover:bg-blue-600 text-white',
-            (model && !audioURL && !isRecording) ? 'opacity-50 cursor-not-allowed' : ''
-          ]"
+          rounded-lg bg="blue-100 dark:blue-900" px-4 py-2
           @click="isRecording ? stopRecording() : startRecording()"
         >
-          <span v-if="isRecording" class="i-carbon-stop-filled text-xl" />
-          <span v-else class="i-carbon-microphone text-xl" />
           {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
         </button>
 

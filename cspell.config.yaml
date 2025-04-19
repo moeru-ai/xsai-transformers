@@ -14,6 +14,7 @@ words:
   - fumadocs
   - gpuu
   - huggingface
+  - iconify
   - importantimport
   - itty
   - masknet
@@ -26,8 +27,10 @@ words:
   - streamable
   - tolist
   - twoslash
+  - unocss
   - valibot
   - vercel
+  - vueuse
   - webgpu
   - whatwg
   - Xenova
