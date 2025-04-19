@@ -248,6 +248,9 @@ importers:
 
   playground:
     dependencies:
+      '@xsai-transformers/provider-embed':
+        specifier: workspace:^
+        version: link:../packages/provider-embed
       '@xsai-transformers/provider-transcribe':
         specifier: workspace:^
         version: link:../packages/provider-transcribe
@@ -282,9 +285,6 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
-      '@xsai-transformers/provider-embed':
-        specifier: workspace:^
-        version: link:../packages/provider-embed
       '@xsai-transformers/utils':
         specifier: workspace:^
         version: link:../packages/utils
