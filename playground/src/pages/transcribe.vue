@@ -1,34 +1,27 @@
 <script setup lang="ts">
 import { serialize } from 'superjson'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import Progress from '../components/Progress.vue'
 import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/utils/types'
 import { createTransformers } from '@xsai-transformers/provider-transcribe'
 import transcribeWorkerURL from '@xsai-transformers/provider-transcribe/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
-import { toWav } from '../libs/vad/wav'
-import processWorkletURL from '../libs/vad/process.worklet.ts?worker&url'
+import Record from '../components/AudioRecord.vue'
 
 const modelId = ref('onnx-community/whisper-large-v3-turbo')
-
-const input = ref<File | null>(null)
-const results = ref<any>()
-
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
 const loadingItemsSet = new Set<string>()
+const input = ref<File>()
+const results = ref<any>()
+const transformersProvider = ref<ReturnType<typeof createTransformers>>()
 
-const isRecording = ref<boolean>(false)
-const audioChunks = ref<Blob[]>([])
-const mediaRecorder = ref<MediaRecorder | null>(null)
-const recordingTime = ref<number>(0)
-const recordingTimer = ref<number | null>(null)
-const audioURL = ref<string | null>(null)
-
-const transformersProvider = createTransformers({ transcribeWorkerURL })
+onMounted(() => {
+  transformersProvider.value = createTransformers({ transcribeWorkerURL })
+})
 
 async function load() {
-  await transformersProvider.loadTranscribe(modelId.value, {
+  await transformersProvider.value.loadTranscribe(modelId.value, {
     dtype: {
       encoder_model: 'fp16',
       decoder_model_merged: 'q4',
@@ -70,7 +63,7 @@ async function execute() {
 
   try {
     const result = await generateTranscription({
-      ...transformersProvider.transcription(modelId.value),
+      ...transformersProvider.value.transcription(modelId.value),
       file: input.value,
     })
 
@@ -82,143 +75,10 @@ async function execute() {
 }
 
 async function handleLoad() {
-  await transformersProvider.terminateTranscribe()
+  transformersProvider.value.terminateTranscribe()
   await load()
 }
 
-function handleFileChange(event: Event) {
-  const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    input.value = target.files[0]
-  }
-}
-
-async function startRecording() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        channelCount: 1,
-        sampleRate: 16000
-      }
-    })
-
-    // Create AudioContext with desired sample rate
-    const audioContext = new AudioContext({ sampleRate: 16000 })
-    const source = audioContext.createMediaStreamSource(stream)
-    
-    // Load and register the VAD worklet processor
-    await audioContext.audioWorklet.addModule(processWorkletURL)
-    const workletNode = new AudioWorkletNode(audioContext, 'vad-processor')
-    
-    const pcmChunks: Float32Array[] = []
-    const segments = ref<Array<{
-      buffer: Float32Array,
-      duration: number,
-      timestamp: number,
-      audioSrc: string
-    }>>([])
-
-    // Handle audio data from the worklet
-    workletNode.port.onmessage = (event) => {
-      const { buffer } = event.data
-      if (!buffer) return
-      
-      // Create a copy of the buffer
-      const chunk = new Float32Array(buffer.length)
-      chunk.set(buffer)
-      pcmChunks.push(chunk)
-      
-      // Calculate duration in seconds
-      const duration = (buffer.length / audioContext.sampleRate)
-      
-      // Convert to WAV for playback
-      const wavBuffer = toWav(buffer, 16000)
-      const audioBlob = new Blob([wavBuffer], { type: 'audio/wav' })
-
-      // Store the segment
-      segments.value.push({
-        buffer: chunk,
-        duration,
-        timestamp: Date.now(),
-        audioSrc: URL.createObjectURL(audioBlob),
-      })
-    }
-
-    // Connect the audio processing pipeline
-    source.connect(workletNode)
-    workletNode.connect(audioContext.destination)
-
-    // Store references for cleanup
-    mediaRecorder.value = {
-      stream,
-      audioContext,
-      source,
-      workletNode,
-      pcmChunks,
-      stop: () => {
-        workletNode.disconnect()
-        source.disconnect()
-
-        // Combine all chunks
-        const totalLength = pcmChunks.reduce((acc, chunk) => acc + chunk.length, 0)
-        const combinedBuffer = new Float32Array(totalLength)
-
-        let offset = 0
-        for (const chunk of pcmChunks) {
-          combinedBuffer.set(chunk, offset)
-          offset += chunk.length
-        }
-
-        // Convert to WAV
-        const wavArrayBuffer = toWav(combinedBuffer, 16000)
-        const audioBlob = new Blob([wavArrayBuffer], { type: 'audio/wav' })
-
-        if (audioURL.value)
-          URL.revokeObjectURL(audioURL.value)
-        audioURL.value = URL.createObjectURL(audioBlob)
-
-        // Convert to File object
-        const fileName = `recording_${new Date().toISOString()}.wav`
-        const file = new File([audioBlob], fileName, { type: 'audio/wav' })
-        input.value = file
-
-        // Clean up
-        if (recordingTimer.value) {
-          clearInterval(recordingTimer.value)
-          recordingTimer.value = null
-        }
-      }
-    } as any
-
-    // Start recording timer
-    recordingTime.value = 0
-    recordingTimer.value = window.setInterval(() => {
-      recordingTime.value += 1
-    }, 1000)
-
-    isRecording.value = true
-  }
-  catch (error) {
-    console.error('Failed to get microphone permission:', error)
-  }
-}
-
-function stopRecording() {
-  if (mediaRecorder.value && isRecording.value) {
-    mediaRecorder.value.stop()
-
-    // Stop all tracks
-    mediaRecorder.value.stream.getTracks().forEach(track => track.stop())
-
-    isRecording.value = false
-  }
-}
-
-function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-}
 </script>
 
 <template>
@@ -249,30 +109,7 @@ function formatTime(seconds: number): string {
       </h2>
 
       <!-- Recording functionality -->
-      <div flex flex-col gap-2 rounded-lg p-4 shadow-md>
-        <h3 text-lg>
-          Recording
-        </h3>
-        <div flex flex-row items-center gap-4>
-          <button rounded-lg :bg="isRecording ? 'red-500 dark:red-700' : 'blue-100 dark:blue-900'" px-4 py-2
-            @click="isRecording ? stopRecording() : startRecording()">
-            {{ isRecording ? 'Stop' : 'Start' }}
-          </button>
-
-          <div v-if="isRecording" flex flex-row items-center gap-2>
-            <div class="h-3 w-3 animate-pulse rounded-full bg-red-500" />
-            <span>Recording: {{ formatTime(recordingTime) }}</span>
-          </div>
-
-          <div v-if="audioURL && !isRecording" flex flex-row items-center gap-2>
-            <audio controls :src="audioURL" />
-          </div>
-        </div>
-
-        <div>
-          <input type="file" accept="audio/*" @change="handleFileChange">
-        </div>
-      </div>
+      <Record v-model="input" />
       <div flex flex-row gap-2>
         <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 @click="execute">
           Transcribe
