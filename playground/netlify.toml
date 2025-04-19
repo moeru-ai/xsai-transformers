@@ -1,6 +1,6 @@
 [build]
 base = "/"
-command = "pnpm -F @xsai-ext-transformers/provider-playground... run build"
+command = "pnpm run packages:build && pnpm run build"
 publish = "/playground/dist"
 
 [build.environment]
