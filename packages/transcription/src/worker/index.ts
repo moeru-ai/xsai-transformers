@@ -3,7 +3,7 @@ import type {
   AutomaticSpeechRecognitionPipeline,
   Tensor,
 } from '@huggingface/transformers'
-import type { PipelineOptionsFrom } from '@xsai-transformers/utils/types'
+import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 import type { WorkerMessageEvent } from './types'
 
 import {

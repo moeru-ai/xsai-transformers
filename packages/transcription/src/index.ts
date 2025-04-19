@@ -3,15 +3,14 @@ import type { GenerateTranscriptionResult } from '@xsai/generate-transcription'
 import type { CommonRequestOptions } from '@xsai/shared'
 import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './worker'
 
-import { merge } from '@xsai-ext/shared-providers'
 import defu from 'defu'
 
-export type Loadable<P, T = string, T2 = undefined> = P & {
+export type LoadableTranscriptionProvider<P, T = string, T2 = undefined> = P & {
   loadTranscribe: (model: (string & {}) | T, options?: T2) => Promise<void>
   terminateTranscribe: () => void
 }
 
-function createTranscribeProvider<T extends string, T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions>(createOptions: CreateProviderOptions): Loadable<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> {
+export function createTranscriptionProvider<T extends string, T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions>(createOptions: CreateProviderOptions): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> {
   let worker: Worker
   let isReady = false
   let _options: T2
@@ -154,10 +153,4 @@ function createTranscribeProvider<T extends string, T2 extends Omit<CommonReques
       }
     },
   }
-}
-
-export function createTransformers(options: { transcribeWorkerURL: string }) {
-  return merge(
-    createTranscribeProvider<'Xenova/whisper-base', Omit<CreateProviderOptions, 'baseURL'> & LoadOptions>({ baseURL: `xsai-provider-ext:///?worker-url=${options.transcribeWorkerURL}&other=true` }),
-  )
 }

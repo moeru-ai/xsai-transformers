@@ -1,5 +1,5 @@
 import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-transformers/utils/types'
+import type { ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-transformers/shared/types'
 
 export enum MessageStatus {
   Loading = 'loading',

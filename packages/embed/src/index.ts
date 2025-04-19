@@ -1,6 +1,6 @@
 import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
 import type { CreateProviderOptions, EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
-import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/utils/types'
+import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
 import type { WorkerMessageEvent } from './types'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/utils/types'
+import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/shared/types'
 
 import { embed } from '@xsai/embed'
 import { serialize } from 'superjson'

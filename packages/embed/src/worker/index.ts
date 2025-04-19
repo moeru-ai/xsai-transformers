@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import type { FeatureExtractionPipeline, FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { PipelineOptionsFrom } from '@xsai-transformers/utils/types'
+import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 import type { WorkerMessageEvent } from '../types'
 
 import { pipeline } from '@huggingface/transformers'
