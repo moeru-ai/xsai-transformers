@@ -32,10 +32,10 @@ const toggleDark = useToggle(isDark)
       </RouterLink>
       <div bg="neutral-200 dark:neutral-600" h="1lh" w="0.5" />
       <RouterLink
-        to="/transcribe" px-3 py-2 bg="hover:neutral-200 dark:hover:neutral-700"
+        to="/transcription" px-3 py-2 bg="hover:neutral-200 dark:hover:neutral-700"
         transition="all duration-250 ease-in-out"
       >
-        <h1>Transcribe</h1>
+        <h1>Transcription</h1>
       </RouterLink>
       <div bg="neutral-200 dark:neutral-600" h="1lh" w="0.5" />
       <RouterLink

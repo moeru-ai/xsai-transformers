@@ -32,3 +32,4 @@ build
 next-env.d.ts
 
 typed-router.d.ts
+!playground/
