@@ -1,36 +1,36 @@
-export interface InitiateProgressInfo {
-  status: 'initiate'
-  name: string
+export interface DoneProgressInfo {
   file: string
+  name: string
+  status: 'done'
 }
 
 export interface DownloadProgressInfo {
-  status: 'download'
-  name: string
   file: string
+  name: string
+  status: 'download'
 }
 
-export interface ProgressStatusInfo {
-  status: 'progress'
-  name: string
+export interface InitiateProgressInfo {
   file: string
-  progress: number
+  name: string
+  status: 'initiate'
+}
+
+export type ProgressCallback = (progress: ProgressInfo) => void
+
+export type ProgressInfo = DoneProgressInfo | DownloadProgressInfo | InitiateProgressInfo | ProgressStatusInfo | ReadyProgressInfo
+
+export interface ProgressStatusInfo {
+  file: string
   loaded: number
+  name: string
+  progress: number
+  status: 'progress'
   total: number
 }
 
-export interface DoneProgressInfo {
-  status: 'done'
-  name: string
-  file: string
-}
-
 export interface ReadyProgressInfo {
+  model: string
   status: 'ready'
   task: string
-  model: string
 }
-
-export type ProgressInfo = InitiateProgressInfo | DownloadProgressInfo | ProgressStatusInfo | DoneProgressInfo | ReadyProgressInfo
-
-export type ProgressCallback = (progress: ProgressInfo) => void

@@ -1,21 +1,23 @@
 import type { CreateProviderOptions, TranscriptionProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { GenerateTranscriptionResult } from '@xsai/generate-transcription'
 import type { CommonRequestOptions } from '@xsai/shared'
-import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './worker'
 
+import { encodeBase64 } from '@xsai-transformers/shared/base64'
 import defu from 'defu'
+
+import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './worker'
 
 export type LoadableTranscriptionProvider<P, T = string, T2 = undefined> = P & {
   loadTranscribe: (model: (string & {}) | T, options?: T2) => Promise<void>
   terminateTranscribe: () => void
 }
 
-export function createTranscriptionProvider<T extends string, T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions>(createOptions: CreateProviderOptions): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> {
+export const createTranscriptionProvider = <T extends string, T2 extends LoadOptions & Omit<CommonRequestOptions, 'baseURL' | 'model'>>(createOptions: CreateProviderOptions): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> => {
   let worker: Worker
   let isReady = false
   let _options: T2
 
-  function loadModel(model: (string & {}) | T, options?: T2) {
+  const loadModel = async (model: (string & {}) | T, options?: T2) => {
     _options = options
 
     return new Promise<void>((resolve, reject) => {
@@ -34,11 +36,11 @@ export function createTranscriptionProvider<T extends string, T2 extends Omit<Co
         const workerURL = new URL(createOptions.baseURL)
 
         if (!worker)
-          worker = new Worker(workerURL.searchParams.get('worker-url')!, { type: 'module' })
+          worker = new Worker(workerURL.searchParams.get('worker-url'), { type: 'module' })
         if (!worker)
           throw new Error('Worker not initialized')
 
-        worker.postMessage({ type: 'load', data: { modelId: model, task: 'feature-extraction', options } } satisfies WorkerMessageEvent)
+        worker.postMessage({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' } satisfies WorkerMessageEvent)
       }
       catch (err) {
         reject(err)
@@ -49,16 +51,16 @@ export function createTranscriptionProvider<T extends string, T2 extends Omit<Co
           case 'error':
             reject(event.data.data.error)
             break
+          case 'progress':
+            if (onProgress != null && typeof onProgress === 'function') {
+              onProgress(event.data.data.progress)
+            }
+
+            break
           case 'status':
             if (event.data.data.status === 'ready') {
               isReady = true
               resolve()
-            }
-
-            break
-          case 'progress':
-            if (onProgress != null && typeof onProgress === 'function') {
-              onProgress(event.data.data.progress)
             }
 
             break
@@ -68,9 +70,17 @@ export function createTranscriptionProvider<T extends string, T2 extends Omit<Co
   }
 
   return {
+    loadTranscribe: loadModel,
+    terminateTranscribe: () => {
+      if (!(worker))
+        return
+      worker.terminate()
+      worker = undefined
+    },
     transcription: (model, options) => Object.assign(createOptions, {
-      fetch: (_, init: RequestInit) => {
+      fetch: async (_, init: RequestInit) => {
         return new Promise<Response>((resolve, reject) => {
+          // eslint-disable-next-line @masknet/no-then, sonarjs/no-nested-functions
           loadModel(model, options).then(() => {
             if (!worker || !isReady) {
               reject(new Error('Model not loaded'))
@@ -126,18 +136,16 @@ export function createTranscriptionProvider<T extends string, T2 extends Omit<Co
 
             if (!errored && !resultDone) {
               // Convert blob to arrayBuffer for processing
+              // eslint-disable-next-line @masknet/no-then
               file.arrayBuffer().then((audioData) => {
-                const base64 = btoa(
-                  new Uint8Array(audioData)
-                    .reduce((data, byte) => data + String.fromCharCode(byte), ''),
-                )
+                const base64 = encodeBase64(audioData)
 
                 worker.postMessage({
-                  type: 'transcribe',
                   data: {
                     audio: base64,
                     options: defu(options, _options),
                   },
+                  type: 'transcribe',
                 } satisfies WorkerMessageEvent)
               }).catch(err => reject(err))
             }
@@ -145,12 +153,5 @@ export function createTranscriptionProvider<T extends string, T2 extends Omit<Co
         })
       },
     }) as unknown as Omit<CommonRequestOptions, 'baseURL'> & Partial<T2> as any,
-    loadTranscribe: loadModel,
-    terminateTranscribe: () => {
-      if (worker) {
-        worker.terminate()
-        worker = undefined
-      }
-    },
   }
 }

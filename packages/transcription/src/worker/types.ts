@@ -6,34 +6,38 @@ export enum MessageStatus {
   Ready = 'ready',
 }
 
-export type LoadOptions = Omit<PretrainedOptions & ModelSpecificPretrainedOptions, 'progress_callback'> & { onProgress?: LoadOptionProgressCallback } & FeatureExtractionPipelineOptions
-export type LoadOptionProgressCallback = (progress: ProgressInfo) => void | Promise<void>
+export type LoadOptionProgressCallback = (progress: ProgressInfo) => Promise<void> | void
+export type LoadOptions = FeatureExtractionPipelineOptions & Omit<ModelSpecificPretrainedOptions & PretrainedOptions, 'progress_callback'> & { onProgress?: LoadOptionProgressCallback }
 export type { ProgressInfo }
 
 export interface WorkerMessageBaseEvent<T, D> {
-  type: T
   data: D
+  type: T
 }
 
+export type WorkerMessageEvent = {
+  [K in keyof WorkerMessageEvents]: WorkerMessageBaseEvent<K, WorkerMessageEvents[K]>;
+}[keyof WorkerMessageEvents]
+
 export interface WorkerMessageEvents {
-  load: {
-    task: string
-    modelId: string
-    options?: LoadOptions
-  }
   error: {
     error?: unknown
-    message?: string
-  }
-  status: {
-    status: MessageStatus
     message?: string
   }
   info: {
     message: string
   }
+  load: {
+    modelId: string
+    options?: LoadOptions
+    task: string
+  }
   progress: {
     progress: ProgressInfo
+  }
+  status: {
+    message?: string
+    status: MessageStatus
   }
   transcribe: {
     audio: string
@@ -45,7 +49,3 @@ export interface WorkerMessageEvents {
     }
   }
 }
-
-export type WorkerMessageEvent = {
-  [K in keyof WorkerMessageEvents]: WorkerMessageBaseEvent<K, WorkerMessageEvents[K]>;
-}[keyof WorkerMessageEvents]

@@ -3,23 +3,24 @@ import type { CreateProviderOptions, EmbedProviderWithExtraOptions } from '@xsai
 import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
-import type { WorkerMessageEvent } from './types'
 
 import defu from 'defu'
+
+import type { WorkerMessageEvent } from './types'
 
 export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
   loadEmbed: (model: (string & {}) | T, options?: T2) => Promise<void>
   terminateEmbed: () => void
 }
 
-export function createEmbedProvider<
+export const createEmbedProvider = <
   T extends string,
-  T2 extends Omit<CommonRequestOptions, 'baseURL' | 'model'> & LoadOptions<FeatureExtractionPipelineOptions>,
->(createOptions: CreateProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> {
+  T2 extends LoadOptions<FeatureExtractionPipelineOptions> & Omit<CommonRequestOptions, 'baseURL' | 'model'>,
+>(createOptions: CreateProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> => {
   let worker: Worker
   let isReady = false
 
-  function loadModel(model: (string & {}) | T, options?: T2) {
+  const loadModel = async (model: (string & {}) | T, options?: T2) => {
     return new Promise<void>((resolve, reject) => {
       let onProgress: LoadOptionProgressCallback | undefined
       if (options != null && 'onProgress' in options && options.onProgress != null) {
@@ -31,11 +32,11 @@ export function createEmbedProvider<
         const workerURL = new URL(createOptions.baseURL)
 
         if (!worker)
-          worker = new Worker(workerURL.searchParams.get('worker-url')!, { type: 'module' })
+          worker = new Worker(workerURL.searchParams.get('worker-url'), { type: 'module' })
         if (!worker)
           throw new Error('Worker not initialized')
 
-        worker.postMessage({ type: 'load', data: { modelId: model, task: 'feature-extraction', options } } satisfies WorkerMessageEvent)
+        worker.postMessage({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' } satisfies WorkerMessageEvent)
       }
       catch (err) {
         reject(err)
@@ -46,16 +47,16 @@ export function createEmbedProvider<
           case 'error':
             reject(event.data.data.error)
             break
+          case 'progress':
+            if (onProgress != null && typeof onProgress === 'function') {
+              onProgress(event.data.data.progress)
+            }
+
+            break
           case 'status':
             if (event.data.data.status === 'ready') {
               isReady = true
               resolve()
-            }
-
-            break
-          case 'progress':
-            if (onProgress != null && typeof onProgress === 'function') {
-              onProgress(event.data.data.progress)
             }
 
             break
@@ -66,8 +67,9 @@ export function createEmbedProvider<
 
   return {
     embed: (model, options) => Object.assign(createOptions, {
-      fetch: (_, init: RequestInit) => {
+      fetch: async (_, init: RequestInit) => {
         return new Promise<Response>((resolve, reject) => {
+          // eslint-disable-next-line @masknet/no-then, sonarjs/no-nested-functions
           loadModel(model, options).then(() => {
             if (!worker || !isReady) {
               reject(new Error('Model not loaded'))
@@ -130,17 +132,17 @@ export function createEmbedProvider<
             })
 
             if (!errored && !resultDone)
-              worker.postMessage({ type: 'extract', data: { text, options: defu<LoadOptions<FeatureExtractionPipelineOptions>, LoadOptions<FeatureExtractionPipelineOptions>[]>(options, { pooling: 'mean', normalize: true }) } } satisfies WorkerMessageEvent)
+              worker.postMessage({ data: { options: defu<LoadOptions<FeatureExtractionPipelineOptions>, LoadOptions<FeatureExtractionPipelineOptions>[]>(options, { normalize: true, pooling: 'mean' }), text }, type: 'extract' } satisfies WorkerMessageEvent)
           })
         })
       },
     }) as unknown as Omit<CommonRequestOptions, 'baseURL'> & Partial<T2> as any,
     loadEmbed: loadModel,
     terminateEmbed: () => {
-      if (worker) {
-        worker.terminate()
-        worker = undefined
-      }
+      if (!(worker))
+        return
+      worker.terminate()
+      worker = undefined
     },
   }
 }

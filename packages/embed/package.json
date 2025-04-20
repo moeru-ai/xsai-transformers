@@ -52,7 +52,8 @@
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
-    "defu": "^6.1.4"
+    "defu": "^6.1.4",
+    "gpuu": "^1.0.0"
   },
   "devDependencies": {
     "@webgpu/types": "^0.1.60",

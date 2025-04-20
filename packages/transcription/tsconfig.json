@@ -3,6 +3,7 @@
     "target": "ESNext",
     "lib": [
       "ESNext",
+      "ESNext.Iterator",
       "DOM",
       "DOM.Iterable",
       "WebWorker"

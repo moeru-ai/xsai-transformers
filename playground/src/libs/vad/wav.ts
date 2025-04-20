@@ -1,10 +1,10 @@
-function writeString(dataView: DataView, offset: number, string: string) {
+const writeString = (dataView: DataView, offset: number, string: string) => {
   for (let i = 0; i < string.length; i++) {
     dataView.setUint8(offset + i, string.charCodeAt(i))
   }
 }
 
-export function toWav(buffer: Float32Array, sampleRate: number) {
+export const toWav = (buffer: Float32Array, sampleRate: number) => {
   const numChannels = 1
   const numSamples = buffer.length
 

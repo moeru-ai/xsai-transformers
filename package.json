@@ -6,8 +6,8 @@
   "packageManager": "pnpm@10.0.0",
   "repository": "github:moeru-ai/xsai-transformers",
   "scripts": {
-    "dev": "pnpm run packages:build && pnpm -r -F=\"./playground\" run dev",
     "build": "pnpm run packages:build && pnpm -r -F=\"./playground\" run build",
+    "dev": "pnpm run packages:build && pnpm -r -F=\"./playground\" run dev",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",
@@ -23,7 +23,9 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
     "@antfu/ni": "^24.3.0",
-    "@cspell/dict-ru_ru": "^2.2.4",
+    "@importantimport/eslint-config": "^1.0.0-beta.2",
+    "@importantimport/tsconfig": "^1.0.0-beta.2",
+    "@pnpm/find-workspace-dir": "^1000.1.0",
     "@types/node": "^22.14.0",
     "@unocss/eslint-config": "^66.1.0-beta.10",
     "@unocss/eslint-plugin": "^66.1.0-beta.10",

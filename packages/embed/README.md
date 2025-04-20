@@ -21,18 +21,20 @@ npm i @xsai-transformers/embed -D
 
 ```ts
 import { createEmbedProvider } from '@xsai-transformers/embed'
-import EmbedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
+import embedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import { embed } from '@xsai/embed'
 
 const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
 
-const res = await embed({
-  ...embedProvider.embed('Xenova/all-MiniLM-L6-v2'),
-  input: 'Hello, world!',
-})
+const handleEmbed = () => {
+  const res = await embed({
+    ...embedProvider.embed('Xenova/all-MiniLM-L6-v2'),
+    input: 'Hello, world!',
+  })
 
-console.log(res.embedding)
-// {
-//   embedding: Array<number>[768],
-// }
+  console.log(res.embedding)
+  // {
+  //   embedding: Array<number>[768],
+  // }
+}
 ```

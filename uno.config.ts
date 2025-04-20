@@ -16,18 +16,18 @@ export default defineConfig({
     presetTypography(),
     presetWebFonts({
       fonts: {
+        mono: 'DM Mono',
         sans: 'DM Sans',
         serif: 'DM Serif Display',
-        mono: 'DM Mono',
       },
     }),
     presetIcons({
       scale: 1.2,
     }),
   ],
+  safelist: 'prose prose-sm m-auto text-left'.split(' '),
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
   ],
-  safelist: 'prose prose-sm m-auto text-left'.split(' '),
 })

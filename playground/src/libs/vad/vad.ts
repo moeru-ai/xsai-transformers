@@ -2,77 +2,77 @@ import { AutoModel, Tensor } from '@huggingface/transformers'
 
 // Default configuration parameters
 export interface VADConfig {
-  // Sample rate of the audio
-  sampleRate: number
-  // Probabilities above this value are considered speech
-  speechThreshold: number
   // Threshold to exit speech state
   exitThreshold: number
-  // Minimum silence duration to consider speech ended (ms)
-  minSilenceDurationMs: number
-  // Padding to add before and after speech (ms)
-  speechPadMs: number
-  // Minimum duration of speech to consider valid (ms)
-  minSpeechDurationMs: number
   // Maximum buffer duration in seconds
   maxBufferDuration: number
+  // Minimum silence duration to consider speech ended (ms)
+  minSilenceDurationMs: number
+  // Minimum duration of speech to consider valid (ms)
+  minSpeechDurationMs: number
   // Size of input buffers from audio source
   newBufferSize: number
-}
-
-export interface VADEvents {
-  // Emitted when speech is detected
-  'speech-start': void
-  // Emitted when speech has ended
-  'speech-end': void
-  // Emitted when a complete speech segment is ready for transcription
-  'speech-ready': { buffer: Float32Array, duration: number }
-  // Emitted for status updates and errors
-  'status': { type: string, message: string }
-  // Debug info
-  'debug': { message: string, data?: any }
+  // Sample rate of the audio
+  sampleRate: number
+  // Padding to add before and after speech (ms)
+  speechPadMs: number
+  // Probabilities above this value are considered speech
+  speechThreshold: number
 }
 
 export type VADEventCallback<K extends keyof VADEvents> =
   (event: VADEvents[K]) => void
 
+export interface VADEvents {
+  // Debug info
+  'debug': { data?: any, message: string }
+  // Emitted when speech has ended
+  'speech-end': void
+  // Emitted when a complete speech segment is ready for transcription
+  'speech-ready': { buffer: Float32Array, duration: number }
+  // Emitted when speech is detected
+  'speech-start': void
+  // Emitted for status updates and errors
+  'status': { message: string, type: string }
+}
+
 /**
  * Voice Activity Detection processor
  */
 export class VAD {
-  private config: VADConfig
-  private model: any
-  private state: Tensor
-  private sampleRateTensor: Tensor
   private buffer: Float32Array
   private bufferPointer: number = 0
+  private config: VADConfig
+  private eventListeners: Partial<Record<keyof VADEvents, VADEventCallback<any>[]>> = {}
+  private inferenceChain: Promise<any> = Promise.resolve()
+  private isReady: boolean = false
   private isRecording: boolean = false
+  private model: any
   private postSpeechSamples: number = 0
   private prevBuffers: Float32Array[] = []
-  private inferenceChain: Promise<any> = Promise.resolve()
-  private eventListeners: Partial<Record<keyof VADEvents, VADEventCallback<any>[]>> = {}
-  private isReady: boolean = false
+  private sampleRateTensor: Tensor
+  private state: Tensor
 
   constructor(userConfig: Partial<VADConfig> = {}) {
     // Default configuration
     const defaultConfig: VADConfig = {
-      sampleRate: 16000,
-      speechThreshold: 0.3,
       exitThreshold: 0.1,
-      minSilenceDurationMs: 400,
-      speechPadMs: 80,
-      minSpeechDurationMs: 250,
       maxBufferDuration: 30,
+      minSilenceDurationMs: 400,
+      minSpeechDurationMs: 250,
       newBufferSize: 512,
+      sampleRate: 16000,
+      speechPadMs: 80,
+      speechThreshold: 0.3,
     }
 
     this.config = { ...defaultConfig, ...userConfig }
 
     // Create buffer based on max duration
-    this.buffer = new Float32Array(this.config.maxBufferDuration * this.config.sampleRate)
+    this.buffer = Float32Array.from(Array.from({ length: this.config.maxBufferDuration * this.config.sampleRate }))
 
     // Initialize state tensor for VAD model
-    this.state = new Tensor('float32', new Float32Array(2 * 1 * 128), [2, 1, 128])
+    this.state = new Tensor('float32', Float32Array.from(Array.from({ length: 2 * 1 * 128 })), [2, 1, 128])
 
     // Sample rate tensor for the model
     this.sampleRateTensor = new Tensor('int64', [this.config.sampleRate], [])
@@ -83,7 +83,7 @@ export class VAD {
    */
   public async initialize(): Promise<void> {
     try {
-      this.emit('status', { type: 'info', message: 'Loading VAD model...' })
+      this.emit('status', { message: 'Loading VAD model...', type: 'info' })
 
       this.model = await AutoModel.from_pretrained('onnx-community/silero-vad', {
         config: { model_type: 'custom' } as any,
@@ -91,12 +91,21 @@ export class VAD {
       })
 
       this.isReady = true
-      this.emit('status', { type: 'info', message: 'VAD model loaded successfully' })
+      this.emit('status', { message: 'VAD model loaded successfully', type: 'info' })
     }
     catch (error) {
-      this.emit('status', { type: 'error', message: `Failed to load VAD model: ${error}` })
+      this.emit('status', { message: `Failed to load VAD model: ${error}`, type: 'error' })
       throw error
     }
+  }
+
+  /**
+   * Remove event listener
+   */
+  public off<K extends keyof VADEvents>(event: K, callback: VADEventCallback<K>): void {
+    if (!this.eventListeners[event])
+      return
+    this.eventListeners[event] = this.eventListeners[event].filter(cb => cb !== callback)
   }
 
   /**
@@ -106,27 +115,7 @@ export class VAD {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = []
     }
-    this.eventListeners[event]!.push(callback as any)
-  }
-
-  /**
-   * Remove event listener
-   */
-  public off<K extends keyof VADEvents>(event: K, callback: VADEventCallback<K>): void {
-    if (!this.eventListeners[event])
-      return
-    this.eventListeners[event] = this.eventListeners[event]!.filter(cb => cb !== callback)
-  }
-
-  /**
-   * Emit event
-   */
-  private emit<K extends keyof VADEvents>(event: K, data: VADEvents[K]): void {
-    if (!this.eventListeners[event])
-      return
-    for (const callback of this.eventListeners[event]!) {
-      callback(data)
-    }
+    this.eventListeners[event].push(callback as any)
   }
 
   /**
@@ -182,7 +171,7 @@ export class VAD {
       if (!this.isRecording) {
         // Speech just started
         this.emit('speech-start', undefined)
-        this.emit('status', { type: 'info', message: 'Speech detected' })
+        this.emit('status', { message: 'Speech detected', type: 'info' })
       }
 
       // Update state
@@ -209,18 +198,39 @@ export class VAD {
   }
 
   /**
+   * Update configuration
+   */
+  public updateConfig(newConfig: Partial<VADConfig>): void {
+    this.config = { ...this.config, ...newConfig }
+
+    // If buffer size changed, create a new buffer
+    if (newConfig.maxBufferDuration || newConfig.sampleRate) {
+      this.buffer = Float32Array.from(Array.from({ length: this.config.maxBufferDuration * this.config.sampleRate }))
+      this.bufferPointer = 0
+    }
+
+    // Update sample rate tensor if needed
+    if (newConfig.sampleRate) {
+      this.sampleRateTensor = new Tensor('int64', [this.config.sampleRate], [])
+    }
+  }
+
+  /**
    * Detect speech in an audio buffer
    */
   private async detectSpeech(buffer: Float32Array): Promise<boolean> {
     const input = new Tensor('float32', buffer, [1, buffer.length])
 
-    const { stateN, output } = await (this.inferenceChain = this.inferenceChain.then(() =>
+    // eslint-disable-next-line @masknet/no-then
+    this.inferenceChain = this.inferenceChain.then(() =>
       this.model({
         input,
         sr: this.sampleRateTensor,
         state: this.state,
       }),
-    ))
+    )
+
+    const { output, stateN } = await (this.inferenceChain)
 
     // Update the state
     this.state = stateN
@@ -229,8 +239,8 @@ export class VAD {
     const speechProb = output.data[0]
 
     this.emit('debug', {
-      message: 'VAD score',
       data: { probability: speechProb },
+      message: 'VAD score',
     })
 
     // Apply thresholds
@@ -238,6 +248,17 @@ export class VAD {
       speechProb > this.config.speechThreshold
       || (this.isRecording && speechProb >= this.config.exitThreshold)
     )
+  }
+
+  /**
+   * Emit event
+   */
+  private emit<K extends keyof VADEvents>(event: K, data: VADEvents[K]): void {
+    if (!this.eventListeners[event])
+      return
+    for (const callback of this.eventListeners[event]) {
+      callback(data)
+    }
   }
 
   /**
@@ -253,7 +274,7 @@ export class VAD {
 
     // Create the final buffer with padding
     const prevLength = this.prevBuffers.reduce((acc, b) => acc + b.length, 0)
-    const finalBuffer = new Float32Array(prevLength + this.bufferPointer + speechPadSamples)
+    const finalBuffer = Float32Array.from(Array.from({ length: prevLength + this.bufferPointer + speechPadSamples }))
 
     // Add previous buffers for pre-speech padding
     let offset = 0
@@ -289,30 +310,12 @@ export class VAD {
     this.postSpeechSamples = 0
     this.prevBuffers = []
   }
-
-  /**
-   * Update configuration
-   */
-  public updateConfig(newConfig: Partial<VADConfig>): void {
-    this.config = { ...this.config, ...newConfig }
-
-    // If buffer size changed, create a new buffer
-    if (newConfig.maxBufferDuration || newConfig.sampleRate) {
-      this.buffer = new Float32Array(this.config.maxBufferDuration * this.config.sampleRate)
-      this.bufferPointer = 0
-    }
-
-    // Update sample rate tensor if needed
-    if (newConfig.sampleRate) {
-      this.sampleRateTensor = new Tensor('int64', [this.config.sampleRate], [])
-    }
-  }
 }
 
 /**
  * Create a VAD processor with the given configuration
  */
-export async function createVAD(config?: Partial<VADConfig>): Promise<VAD> {
+export const createVAD = async (config?: Partial<VADConfig>): Promise<VAD> => {
   const vad = new VAD(config)
   await vad.initialize()
   return vad

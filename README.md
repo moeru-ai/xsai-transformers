@@ -15,10 +15,10 @@ embedding, transcriptions, speech synthesis, and text generations right in the b
 xsAI 🤗 Transformers.js Provider aligned the API of xsAI, this enables the possibilities to switch from cloud AI/LLM model providers to local inference one really easy:
 
 ```ts
-import { env } from 'node:process'
 import { createEmbedProvider } from '@xsai-transformers/embed'
 import embedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import { embed } from '@xsai/embed'
+import { env } from 'node:process'
 
 const providerOpenAI = {
   apiKey: env.OPENAI_API_KEY!,
@@ -31,7 +31,7 @@ const providerTransformers = createEmbedProvider({ baseURL: `xsai-transformers:/
 const input = 'sunny day at the beach'
 const activeProvider = 'transformers'
 
-async function handleEmbedding() {
+const handleEmbedding = () => {
   let results = []
 
   switch (activeProvider) {
@@ -43,13 +43,13 @@ async function handleEmbedding() {
       break
   }
 
+  console.log(results)
   // [
   //   -0.038177140057086945,
   //   0.032910916954278946,
   //   -0.005459371022880077,
   //   // ...
   // ]
-  console.log(results)
 }
 ```
 
@@ -101,7 +101,7 @@ import { createTranscriptionProvider } from '@xsai-transformers/transcription'
 import transcriptionWorkerURL from '@xsai-transformers/transcription/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
 
-const providerTransformers = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${teTranscriptionProvider}}` })
+const providerTransformers = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${transcriptionWorkerURL}}` })
 const file: File = undefined // Audio file
 const result = (await generateTranscription({ ...providerTransformers.transcribe('onnx-community/whisper-large-v3-turbo'), file })).text
 ```

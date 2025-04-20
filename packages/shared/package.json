@@ -21,6 +21,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
+    "./base64": {
+      "types": "./dist/base64/index.d.ts",
+      "import": "./dist/base64/index.mjs"
+    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.mjs"

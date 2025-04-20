@@ -9,13 +9,15 @@ const MIN_CHUNK_SIZE = 512
 /**
  * Global state for audio buffer accumulation
  */
+// eslint-disable-next-line @masknet/no-top-level
 let globalPointer = 0
-const globalBuffer = new Float32Array(MIN_CHUNK_SIZE)
+const globalBuffer = Float32Array.from(Array.from({ length: MIN_CHUNK_SIZE }))
 
 /**
  * VAD AudioWorklet Processor - processes audio chunks and sends them to the main thread
  */
 class VADProcessor extends AudioWorkletProcessor {
+  // eslint-disable-next-line sonarjs/no-invariant-returns
   process(inputs: Float32Array[][], _outputs: Float32Array[][], _parameters: Record<string, Float32Array>) {
     const buffer = inputs[0][0]
     if (!buffer)
@@ -50,4 +52,5 @@ class VADProcessor extends AudioWorkletProcessor {
   }
 }
 
+// eslint-disable-next-line @masknet/no-top-level
 registerProcessor('vad-processor', VADProcessor)

@@ -16,8 +16,8 @@
     "directory": "playground"
   },
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit"
   },
@@ -32,6 +32,7 @@
     "@iconify-json/simple-icons": "^1.2.32",
     "@iconify-json/solar": "^1.2.2",
     "@iconify-json/svg-spinners": "^1.2.2",
+    "@types/audioworklet": "^0.0.74",
     "@unocss/reset": "^66.1.0-beta.10",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vueuse/core": "^13.0.0",

@@ -36,13 +36,27 @@ export class VADAudioManager {
    */
   constructor(vad: VAD, options: VADAudioOptions = {}) {
     this.vad = vad
-    // this.minChunkSize = options.minChunkSize || 512;
 
     // Create audio context with user options or defaults
     this.audioContext = new AudioContext(options.audioContextOptions || {
-      sampleRate: 16000, // Match the VAD sample rate
       latencyHint: 'interactive',
+      sampleRate: 16000, // Match the VAD sample rate
     })
+  }
+
+  /**
+   * Clean up all resources
+   */
+  public dispose(): void {
+    this.stop()
+
+    // Now fully close the audio context
+    if (this.audioContext && this.audioContext.state !== 'closed') {
+      this.audioContext.close()
+      this.audioContext = null
+    }
+
+    this.workletInitialized = false
   }
 
   /**
@@ -67,7 +81,7 @@ export class VADAudioManager {
       this.audioWorkletNode.port.onmessage = async (event) => {
         const { buffer } = event.data
         if (buffer && buffer.length > 0) {
-          await this.vad.processAudio(new Float32Array(buffer))
+          await this.vad.processAudio(Float32Array.from(buffer))
         }
       }
     }
@@ -93,9 +107,9 @@ export class VADAudioManager {
       // Request microphone access
       this.mediaStream = await navigator.mediaDevices.getUserMedia({
         audio: {
+          autoGainControl: true,
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true,
           sampleRate: this.audioContext.sampleRate,
         },
       })
@@ -115,21 +129,6 @@ export class VADAudioManager {
       console.error('Failed to start microphone:', error)
       throw error
     }
-  }
-
-  public async stopMicrophone(): Promise<void> {
-    if (this.mediaStream) {
-      this.mediaStream.getTracks().forEach(track => track.stop())
-      this.mediaStream = null
-    }
-
-    if (this.sourceNode) {
-      this.sourceNode.disconnect()
-      this.sourceNode = null
-    }
-
-    this.audioContext?.suspend()
-    this.audioWorkletNode?.disconnect()
   }
 
   /**
@@ -158,18 +157,18 @@ export class VADAudioManager {
     this.audioWorkletNode = null
   }
 
-  /**
-   * Clean up all resources
-   */
-  public dispose(): void {
-    this.stop()
-
-    // Now fully close the audio context
-    if (this.audioContext && this.audioContext.state !== 'closed') {
-      this.audioContext.close()
-      this.audioContext = null
+  public async stopMicrophone(): Promise<void> {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop())
+      this.mediaStream = null
     }
 
-    this.workletInitialized = false
+    if (this.sourceNode) {
+      this.sourceNode.disconnect()
+      this.sourceNode = null
+    }
+
+    this.audioContext?.suspend()
+    this.audioWorkletNode?.disconnect()
   }
 }
