@@ -1,6 +1,6 @@
 [build]
 base = "/"
-command = "pnpm run packages:build && pnpm run build"
+command = "pnpm run build"
 publish = "/playground/dist"
 
 [build.environment]
