@@ -12,6 +12,7 @@ words:
   - dtypes
   - elysia
   - eslintcache
+  - feaxios
   - fumadocs
   - gpuu
   - huggingface
@@ -19,14 +20,18 @@ words:
   - importantimport
   - itty
   - masknet
+  - matchall
   - modelcontextprotocol
   - moeru
+  - nolyfill
   - onnxruntime
   - PKCE
   - pkgroll
   - Pretrained
+  - sizecheck
   - sonarjs
   - streamable
+  - taze
   - tolist
   - twoslash
   - unocss

@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 
 import Progress from '../components/Progress.vue'
 import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/shared/types'
-import { createTransformers } from '@xsai-transformers/transcription'
+import { createTranscriptionProvider } from '@xsai-transformers/transcription'
 import transcribeWorkerURL from '@xsai-transformers/transcription/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
 import Record from '../components/AudioRecord.vue'
@@ -17,7 +17,7 @@ const results = ref<any>()
 const transformersProvider = ref<ReturnType<typeof createTransformers>>()
 
 onMounted(() => {
-  transformersProvider.value = createTransformers({ transcribeWorkerURL })
+  transformersProvider.value = createTranscriptionProvider({ transcribeWorkerURL })
 })
 
 async function load() {
