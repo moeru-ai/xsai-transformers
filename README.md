@@ -6,7 +6,7 @@ embedding, transcriptions, speech synthesis, and text generations right in the b
 <!-- automd:badges name="xsai" provider="badgen" color="cyan" license bundlephobia -->
 
 [![npm version](https://flat.badgen.net/npm/v/xsai-transformers?color=cyan)](https://npmjs.com/package/xsai-transformers)
-[![npm downloads](https://flat.badgen.net/npm/dm/xsai?color=cyan)](https://npm.chart.dev/xsai-transformers)
+[![npm downloads](https://flat.badgen.net/npm/dm/xsai-transformers?color=cyan)](https://npm.chart.dev/xsai-transformers)
 [![bundle size](https://flat.badgen.net/bundlephobia/minzip/xsai-transformers?color=cyan)](https://bundlephobia.com/package/xsai-transformers)
 [![license](https://flat.badgen.net/github/license/moeru-ai/xsai-transformers?color=cyan)](https://github.com/moeru-ai/xsai-transformers/blob/main/LICENSE.md)
 
