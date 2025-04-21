@@ -1,6 +1,7 @@
 // vad-audio-manager.ts
 
-import type { VAD, VADConfig } from '../vad'
+import type { VADConfig } from '../types'
+import type { VAD } from '../vad'
 
 export interface VADAudioOptions {
   /**

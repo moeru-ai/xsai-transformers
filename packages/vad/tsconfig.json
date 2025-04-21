@@ -3,7 +3,6 @@
     "target": "ESNext",
     "lib": [
       "ESNext",
-      "ESNext.Iterator",
       "DOM",
       "DOM.Iterable",
       "WebWorker"
@@ -14,7 +13,9 @@
       "vite/client",
       // @webgpu/types
       // https://www.npmjs.com/package/@webgpu/types
-      "@webgpu/types"
+      "@webgpu/types",
+      "@types/audioworklet",
+      "unplugin-vue-router/client"
     ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -25,6 +26,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.mts"
+    "src/**/*.mts",
+    "src/**/*.vue"
   ]
 }
