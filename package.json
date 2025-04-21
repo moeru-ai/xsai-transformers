@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.8.1",
+  "packageManager": "pnpm@10.9.0",
   "repository": "github:moeru-ai/xsai-transformers",
   "scripts": {
     "build": "pnpm run packages:build && pnpm -r -F=\"./playground\" run build",
@@ -43,7 +43,7 @@
     "unocss": "^66.1.0-beta.12",
     "vite": "^6.3.2",
     "vite-plugin-inspect": "^11.0.1",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.2"
   },
   "workspaces": [
     "packages/**",
