@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { toWav } from '../libs/vad/wav'
-import processWorkletURL from '../libs/vad/process.worklet.ts?worker&url'
+import { toWav } from '@xsai-transformers/vad'
+import processWorkletURL from '@xsai-transformers/vad/worker?worker&url'
 import InputFile from './InputFile.vue'
 
 const model = defineModel<File | null>({ required: true })

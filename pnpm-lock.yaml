@@ -120,6 +120,9 @@ importers:
       '@xsai-transformers/transcription':
         specifier: workspace:^
         version: link:../../packages/transcription
+      '@xsai-transformers/vad':
+        specifier: workspace:^
+        version: link:../../packages/vad
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -255,6 +258,43 @@ importers:
         specifier: workspace:*
         version: link:../shared
 
+  packages/vad:
+    dependencies:
+      '@huggingface/transformers':
+        specifier: ^3.5.0
+        version: 3.5.0
+      '@xsai-ext/shared-providers':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/embed':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/generate-transcription':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      '@xsai/shared':
+        specifier: 'catalog:'
+        version: 0.2.0-beta.3
+      defu:
+        specifier: ^6.1.4
+        version: 6.1.4
+      gpuu:
+        specifier: ^1.0.0
+        version: 1.0.0
+      js-base64:
+        specifier: ^3.7.7
+        version: 3.7.7
+      web-worker:
+        specifier: ^1.5.0
+        version: 1.5.0
+    devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
+      '@xsai-transformers/shared':
+        specifier: workspace:*
+        version: link:../shared
+
   playground:
     dependencies:
       '@xsai-transformers/embed':
@@ -263,6 +303,9 @@ importers:
       '@xsai-transformers/transcription':
         specifier: workspace:^
         version: link:../packages/transcription
+      '@xsai-transformers/vad':
+        specifier: workspace:^
+        version: link:../packages/vad
       '@xsai/generate-transcription':
         specifier: 'catalog:'
         version: 0.2.0-beta.3

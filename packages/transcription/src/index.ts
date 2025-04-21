@@ -12,7 +12,11 @@ export type LoadableTranscriptionProvider<P, T = string, T2 = undefined> = P & {
   terminateTranscribe: () => void
 }
 
-export const createTranscriptionProvider = <T extends string, T2 extends LoadOptions & Omit<CommonRequestOptions, 'baseURL' | 'model'>>(createOptions: CreateProviderOptions): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> => {
+export const createTranscriptionProvider
+= <T extends string, T2 extends LoadOptions & Omit<CommonRequestOptions, 'baseURL' | 'model'>>
+(
+  createOptions: CreateProviderOptions,
+): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> => {
   let worker: Worker
   let isReady = false
   let _options: T2

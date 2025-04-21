@@ -14,10 +14,10 @@ const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
 const loadingItemsSet = new Set<string>()
 const input = ref<File>()
 const results = ref<any>()
-const transformersProvider = ref<ReturnType<typeof createTransformers>>()
+const transformersProvider = ref<ReturnType<typeof createTranscriptionProvider>>()
 
 onMounted(() => {
-  transformersProvider.value = createTranscriptionProvider({ transcribeWorkerURL })
+  transformersProvider.value = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${transcribeWorkerURL}` })
 })
 
 async function load() {
