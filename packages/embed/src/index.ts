@@ -19,49 +19,71 @@ export const createEmbedProvider = <
 >(createOptions: CreateProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> => {
   let worker: Worker
   let isReady = false
+  let isLoading = false
+  let _options: T2
 
   const loadModel = async (model: (string & {}) | T, options?: T2) => {
+    _options = options
+
     return new Promise<void>((resolve, reject) => {
-      let onProgress: LoadOptionProgressCallback | undefined
-      if (options != null && 'onProgress' in options && options.onProgress != null) {
-        onProgress = options?.onProgress
-        delete options?.onProgress
+      if (isReady) {
+        resolve()
+        return
       }
 
       try {
-        const workerURL = new URL(createOptions.baseURL)
+        let onProgress: LoadOptionProgressCallback | undefined
+        if (options != null && 'onProgress' in options && options.onProgress != null) {
+          onProgress = options?.onProgress
+          delete options?.onProgress
+        }
 
-        if (!worker)
-          worker = new Worker(workerURL.searchParams.get('worker-url'), { type: 'module' })
-        if (!worker)
-          throw new Error('Worker not initialized')
+        if (!isLoading && !isReady && !worker) {
+          try {
+            const workerURL = new URL(createOptions.baseURL)
 
-        worker.postMessage({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' } satisfies WorkerMessageEvent)
+            if (!worker)
+              worker = new Worker(workerURL.searchParams.get('worker-url'), { type: 'module' })
+            if (!worker)
+              throw new Error('Worker not initialized')
+
+            worker.postMessage({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' } satisfies WorkerMessageEvent)
+          }
+          catch (err) {
+            isLoading = false
+            reject(err)
+            return
+          }
+
+          worker.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
+            switch (event.data.type) {
+              case 'error':
+                isLoading = false
+                reject(event.data.data.error)
+                break
+              case 'progress':
+                if (onProgress != null && typeof onProgress === 'function') {
+                  onProgress(event.data.data.progress)
+                }
+
+                break
+            }
+          })
+        }
+
+        worker.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
+          if (event.data.type !== 'status' || event.data.data.status !== 'ready')
+            return
+
+          isReady = true
+          isLoading = false
+          resolve()
+        })
       }
       catch (err) {
+        isLoading = false
         reject(err)
       }
-
-      worker.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
-        switch (event.data.type) {
-          case 'error':
-            reject(event.data.data.error)
-            break
-          case 'progress':
-            if (onProgress != null && typeof onProgress === 'function') {
-              onProgress(event.data.data.progress)
-            }
-
-            break
-          case 'status':
-            if (event.data.data.status === 'ready') {
-              isReady = true
-              resolve()
-            }
-
-            break
-        }
-      })
     })
   }
 
