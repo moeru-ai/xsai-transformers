@@ -163,7 +163,10 @@ export const createEmbedProvider = <
     terminateEmbed: () => {
       if (!(worker))
         return
+
       worker.terminate()
+      isReady = false
+      isLoading = false
       worker = undefined
     },
   }

@@ -47,7 +47,7 @@ export const createTranscriptionProvider
             if (!worker)
               throw new Error('Worker not initialized')
 
-            worker.postMessage({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' } satisfies WorkerMessageEvent)
+            worker.postMessage({ data: { modelId: model, options, task: 'automatic-speech-recognition' }, type: 'load' } satisfies WorkerMessageEvent)
           }
           catch (err) {
             isLoading = false
@@ -93,6 +93,8 @@ export const createTranscriptionProvider
       if (!(worker))
         return
       worker.terminate()
+      isReady = false
+      isLoading = false
       worker = undefined
     },
     transcription: (model, options) => Object.assign(createOptions, {
