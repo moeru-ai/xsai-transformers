@@ -16,27 +16,32 @@
     "directory": "packages/vad"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./worker": {
+        "types": "./dist/worker/index.d.ts",
+        "default": "./dist/worker/index.js"
+      },
+      "./package.json": "./package.json"
     },
-    "./worker": {
-      "types": "./dist/worker/index.d.ts",
-      "import": "./dist/worker/index.mjs"
-    }
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
   },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./worker": "./src/worker/index.ts"
+  },
   "files": [
     "README.md",
     "dist",
     "package.json"
   ],
   "scripts": {
-    "build": "unbuild",
-    "dev": "unbuild --stub",
-    "stub": "unbuild --stub",
+    "build": "pkgroll",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -50,6 +55,7 @@
   "dependencies": {
     "@huggingface/transformers": "^3.5.0",
     "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/generate-transcription": "catalog:",
     "@xsai/shared": "catalog:",
@@ -59,7 +65,6 @@
   },
   "devDependencies": {
     "@types/audioworklet": "^0.0.74",
-    "@webgpu/types": "^0.1.60",
-    "@xsai-transformers/shared": "workspace:*"
+    "@webgpu/types": "^0.1.60"
   }
 }

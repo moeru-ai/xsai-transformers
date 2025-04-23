@@ -16,35 +16,42 @@
     "directory": "packages-top/xsai-transformers"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./embed/worker": {
+        "types": "./dist/embed/worker.d.ts",
+        "import": "./dist/embed/worker.js"
+      },
+      "./transcription/worker": {
+        "types": "./dist/transcription/worker.d.ts",
+        "import": "./dist/transcription/worker.js"
+      },
+      "./vad/worker": {
+        "types": "./dist/vad/worker.d.ts",
+        "import": "./dist/vad/worker.js"
+      },
+      "./package.json": "./package.json"
     },
-    "./embed/worker": {
-      "types": "./dist/embed/worker.d.ts",
-      "import": "./dist/embed/worker.mjs"
-    },
-    "./transcription/worker": {
-      "types": "./dist/transcription/worker.d.ts",
-      "import": "./dist/transcription/worker.mjs"
-    },
-    "./vad/worker": {
-      "types": "./dist/vad/worker.d.ts",
-      "import": "./dist/vad/worker.mjs"
-    }
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
   },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./embed/worker": "./src/embed/worker.ts",
+    "./transcription/worker": "./src/transcription/worker.ts",
+    "./vad/worker": "./src/vad/worker.ts"
+  },
   "files": [
     "README.md",
     "dist",
     "package.json"
   ],
   "scripts": {
-    "build": "unbuild",
-    "dev": "unbuild --stub",
-    "stub": "unbuild --stub",
+    "build": "pkgroll",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {

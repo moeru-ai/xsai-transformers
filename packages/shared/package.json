@@ -16,31 +16,37 @@
     "directory": "packages/shared"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./base64": {
+        "types": "./dist/base64/index.d.ts",
+        "default": "./dist/base64/index.js"
+      },
+      "./types": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/types/index.js"
+      },
+      "./package.json": "./package.json"
     },
-    "./base64": {
-      "types": "./dist/base64/index.d.ts",
-      "import": "./dist/base64/index.mjs"
-    },
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.mjs"
-    }
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
   },
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./base64": "./src/base64/index.ts",
+    "./types": "./src/types/index.ts"
+  },
   "files": [
     "README.md",
     "dist",
     "package.json"
   ],
   "scripts": {
-    "build": "unbuild",
-    "dev": "unbuild --stub",
-    "stub": "unbuild --stub",
+    "build": "pkgroll",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
