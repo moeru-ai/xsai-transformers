@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue'
 import Progress from '../components/Progress.vue'
 import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/shared/types'
 import { createTranscriptionProvider } from '@xsai-transformers/transcription'
-import transcribeWorkerURL from '@xsai-transformers/transcription/worker?worker&url'
+import transcribeWorkerURL from 'xsai-transformers/transcription/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
 import Record from '../components/AudioRecord.vue'
 

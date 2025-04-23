@@ -288,6 +288,9 @@ importers:
         specifier: ^1.5.0
         version: 1.5.0
     devDependencies:
+      '@types/audioworklet':
+        specifier: ^0.0.74
+        version: 0.0.74
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
@@ -309,6 +312,9 @@ importers:
       '@xsai/generate-transcription':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      xsai-transformers:
+        specifier: workspace:^
+        version: link:../packages-top/xsai-transformers
     devDependencies:
       '@huggingface/transformers':
         specifier: ^3.5.0
