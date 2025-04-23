@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/speech",
   "type": "module",
-  "private": true,
+  "version": "0.0.2",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
