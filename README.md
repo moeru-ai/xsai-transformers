@@ -12,45 +12,25 @@ embedding, transcriptions, speech synthesis, and text generations right in the b
 
 <!-- /automd -->
 
-xsAI 🤗 Transformers.js Provider aligned the API of xsAI, this enables the possibilities to switch from cloud AI/LLM model providers to local inference one really easy:
+xsAI Transformers.js Provider aligned the API of xsAI:
 
 ```ts
 import { createEmbedProvider } from '@xsai-transformers/embed'
 import embedWorkerURL from '@xsai-transformers/embed/worker?worker&url'
 import { embed } from '@xsai/embed'
-import { env } from 'node:process'
 
-const providerOpenAI = {
-  apiKey: env.OPENAI_API_KEY!,
-  baseURL: 'https://api.openai.com/v1/',
-  model: 'text-embedding-3-large',
-}
+const transformers = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
 
-const providerTransformers = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
-
-const input = 'sunny day at the beach'
-const activeProvider = 'transformers'
-
-const handleEmbedding = () => {
-  let results = []
-
-  switch (activeProvider) {
-    case 'openai':
-      results = (await embed({ ...providerOpenAI, input })).embedding
-      break
-    case 'transformers':
-      results = (await embed({ ...providerTransformers.embed('Xenova/all-MiniLM-L6-v2'), input })).embedding
-      break
-  }
-
-  console.log(results)
-  // [
-  //   -0.038177140057086945,
-  //   0.032910916954278946,
-  //   -0.005459371022880077,
-  //   // ...
-  // ]
-}
+// [
+//   -0.038177140057086945,
+//   0.032910916954278946,
+//   -0.005459371022880077,
+//   // ...
+// ]
+const { embedding } = await embed({
+  ...transformers.embed('Xenova/all-MiniLM-L6-v2'),
+  input: 'sunny day at the beach'
+})
 ```
 
 ## Features
@@ -101,9 +81,9 @@ import { createTranscriptionProvider } from '@xsai-transformers/transcription'
 import transcriptionWorkerURL from '@xsai-transformers/transcription/worker?worker&url'
 import { generateTranscription } from '@xsai/generate-transcription'
 
-const providerTransformers = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${transcriptionWorkerURL}}` })
+const transformers = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${transcriptionWorkerURL}}` })
 const file: File = undefined // Audio file
-const result = (await generateTranscription({ ...providerTransformers.transcribe('onnx-community/whisper-large-v3-turbo'), file })).text
+const { text } = await generateTranscription({ ...transformers.transcribe('onnx-community/whisper-large-v3-turbo'), file })
 ```
 
 ### Status
