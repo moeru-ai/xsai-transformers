@@ -14,8 +14,7 @@
       // @webgpu/types
       // https://www.npmjs.com/package/@webgpu/types
       "@webgpu/types",
-      "@types/audioworklet",
-      "unplugin-vue-router/client"
+      "@types/audioworklet"
     ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

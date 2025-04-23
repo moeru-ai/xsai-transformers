@@ -58,6 +58,7 @@
     "js-base64": "^3.7.7"
   },
   "devDependencies": {
+    "@types/audioworklet": "^0.0.74",
     "@webgpu/types": "^0.1.60",
     "@xsai-transformers/shared": "workspace:*"
   }

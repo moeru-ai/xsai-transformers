@@ -25,7 +25,8 @@
     "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/transcription": "workspace:^",
     "@xsai-transformers/vad": "workspace:^",
-    "@xsai/generate-transcription": "catalog:"
+    "@xsai/generate-transcription": "catalog:",
+    "xsai-transformers": "workspace:^"
   },
   "devDependencies": {
     "@huggingface/transformers": "^3.5.0",

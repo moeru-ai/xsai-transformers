@@ -21,9 +21,17 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
-    "./worker/*": {
-      "types": "./dist/worker/*.d.ts",
-      "import": "./dist/worker/*.mjs"
+    "./embed/worker": {
+      "types": "./dist/embed/worker.d.ts",
+      "import": "./dist/embed/worker.mjs"
+    },
+    "./transcription/worker": {
+      "types": "./dist/transcription/worker.d.ts",
+      "import": "./dist/transcription/worker.mjs"
+    },
+    "./vad/worker": {
+      "types": "./dist/vad/worker.d.ts",
+      "import": "./dist/vad/worker.mjs"
     }
   },
   "module": "./dist/index.mjs",

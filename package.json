@@ -11,13 +11,13 @@
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "nolyfill": "pnpm dlx nolyfill",
-    "packages:build": "pnpm -rF=\"./packages/*\" run build",
-    "packages:stub": "pnpm -rF=\"./packages/*\" run stub",
+    "packages:build": "pnpm -r -F=\"./packages/*\" -F=\"./packages-top/*\" run build",
+    "packages:stub": "pnpm -rF=\"./packages/*\" -F=\"./packages-top/*\" run stub",
     "postinstall": "npx simple-git-hooks",
     "sizecheck": "npx vite-bundle-visualizer",
     "test": "vitest --coverage",
     "test:run": "vitest run",
-    "typecheck": "pnpm -rF=\"./packages/*\" -F run --parallel typecheck",
+    "typecheck": "pnpm -r -F=\"./packages/*\" -F=\"./packages-top/*\" run --parallel typecheck",
     "up": "taze major -I"
   },
   "devDependencies": {
