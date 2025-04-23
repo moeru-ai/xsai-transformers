@@ -59,8 +59,5 @@
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4"
-  },
-  "devDependencies": {
-    "@webgpu/types": "^0.1.60"
   }
 }

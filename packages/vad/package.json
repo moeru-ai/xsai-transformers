@@ -62,9 +62,5 @@
     "defu": "^6.1.4",
     "gpuu": "^1.0.0",
     "js-base64": "^3.7.7"
-  },
-  "devDependencies": {
-    "@types/audioworklet": "^0.0.74",
-    "@webgpu/types": "^0.1.60"
   }
 }

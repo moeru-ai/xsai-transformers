@@ -48,6 +48,9 @@ importers:
       '@pnpm/find-workspace-dir':
         specifier: ^1000.1.0
         version: 1000.1.0
+      '@types/audioworklet':
+        specifier: ^0.0.74
+        version: 0.0.74
       '@types/node':
         specifier: ^22.14.1
         version: 22.14.1
@@ -60,6 +63,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.0.5
         version: 3.0.5(vitest@3.1.2(@types/debug@4.1.12)(@types/node@22.14.1)(jiti@2.4.2)(yaml@2.7.1))
+      '@webgpu/types':
+        specifier: ^0.1.60
+        version: 0.1.60
       bumpp:
         specifier: ^10.1.0
         version: 10.1.0(magicast@0.3.5)
@@ -148,6 +154,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      '@xsai-transformers/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -167,9 +176,6 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/shared':
-        specifier: workspace:^
-        version: link:../shared
 
   packages/shared:
     dependencies:
@@ -201,6 +207,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      '@xsai-transformers/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -217,9 +226,6 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/shared':
-        specifier: workspace:^
-        version: link:../shared
 
   packages/transcription:
     dependencies:
@@ -229,6 +235,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      '@xsai-transformers/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -254,9 +263,6 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/shared':
-        specifier: workspace:*
-        version: link:../shared
 
   packages/vad:
     dependencies:
@@ -266,6 +272,9 @@ importers:
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
+      '@xsai-transformers/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@xsai/embed':
         specifier: 'catalog:'
         version: 0.2.0-beta.3
@@ -294,9 +303,6 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.60
         version: 0.1.60
-      '@xsai-transformers/shared':
-        specifier: workspace:*
-        version: link:../shared
 
   playground:
     dependencies:
