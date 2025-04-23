@@ -20,6 +20,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
+    },
+    "./worker/*": {
+      "types": "./dist/worker/*.d.ts",
+      "import": "./dist/worker/*.mjs"
     }
   },
   "module": "./dist/index.mjs",
