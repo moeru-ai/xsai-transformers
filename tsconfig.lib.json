@@ -1,0 +1,18 @@
+{
+  "extends": "@importantimport/tsconfig/app.json",
+  "compilerOptions": {
+    "types": [
+      "vite/client",
+      // @webgpu/types
+      // https://www.npmjs.com/package/@webgpu/types
+      "@webgpu/types"
+    ]
+  },
+  "include": [
+    "packages/**/src",
+    "packages-top/**/src"
+  ],
+  "exclude": [
+    "packages/vad/src"
+  ]
+}

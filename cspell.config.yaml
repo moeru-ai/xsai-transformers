@@ -3,6 +3,7 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - audioworklet
   - automd
   - bumpp
   - changelogithub
@@ -35,6 +36,7 @@ words:
   - tolist
   - twoslash
   - unocss
+  - unplugin
   - valibot
   - vercel
   - vueuse
