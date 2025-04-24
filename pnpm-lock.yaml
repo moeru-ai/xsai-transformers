@@ -141,10 +141,6 @@ importers:
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   packages/embed:
     dependencies:
@@ -172,10 +168,6 @@ importers:
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   packages/shared:
     dependencies:
@@ -194,10 +186,6 @@ importers:
       onnxruntime-common:
         specifier: ^1.21.0
         version: 1.21.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   packages/speech:
     dependencies:
@@ -222,10 +210,6 @@ importers:
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   packages/transcription:
     dependencies:
@@ -259,10 +243,6 @@ importers:
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
-    devDependencies:
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   packages/vad:
     dependencies:
@@ -296,13 +276,6 @@ importers:
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
-    devDependencies:
-      '@types/audioworklet':
-        specifier: ^0.0.74
-        version: 0.0.74
-      '@webgpu/types':
-        specifier: ^0.1.60
-        version: 0.1.60
 
   playground:
     dependencies:
@@ -1598,6 +1571,9 @@ packages:
 
   '@xsai/shared@0.2.0-beta.3':
     resolution: {integrity: sha512-bpp848WfOCmmkuSePe7czB5Vy1lZxNqV1pSX/N0gZVXxfBQC6wVqkjoScl17v13hsThDbqB6dyrN4ca3mwVBog==}
+
+  '@xsai/shared@0.2.0-beta.4':
+    resolution: {integrity: sha512-emGbTxbYlUxYiQciW1XzInY3poosmJSCDCaiJoX/6Q1IFq7PBq5SDH6LkmD8y7IQGvtoBllzwjwYm8+tBCG8Tw==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -5238,17 +5214,19 @@ snapshots:
 
   '@xsai-ext/shared-providers@0.2.0-beta.3':
     dependencies:
-      '@xsai/shared': 0.2.0-beta.3
+      '@xsai/shared': 0.2.0-beta.4
 
   '@xsai/embed@0.2.0-beta.3':
     dependencies:
-      '@xsai/shared': 0.2.0-beta.3
+      '@xsai/shared': 0.2.0-beta.4
 
   '@xsai/generate-transcription@0.2.0-beta.3':
     dependencies:
-      '@xsai/shared': 0.2.0-beta.3
+      '@xsai/shared': 0.2.0-beta.4
 
   '@xsai/shared@0.2.0-beta.3': {}
+
+  '@xsai/shared@0.2.0-beta.4': {}
 
   acorn-jsx@5.3.2(acorn@8.14.1):
     dependencies:
