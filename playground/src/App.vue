@@ -9,9 +9,7 @@ const toggleDark = useToggle(isDark)
   <div mx-auto max-w-screen-lg flex flex-col gap-2 p-4>
     <header flex flex-row items-center justify-between>
       <h1 text-2xl>
-        <a href="https://huggingface.co/docs/transformers.js/index">🤗 Transformers.js</a> + <a
-          href="https://github.com/moeru-ai/xsai"
-        >xsai</a> Playground
+        <a href="https://github.com/moeru-ai/xsai">xsAI</a> + <a href="https://huggingface.co/docs/transformers.js/index">🤗 Transformers.js</a> Provider Playground
       </h1>
       <div flex flex-row items-center gap-2>
         <button text-lg @click="() => toggleDark()">
