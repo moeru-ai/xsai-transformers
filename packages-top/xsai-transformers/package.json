@@ -68,7 +68,6 @@
     "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai-transformers/transcription": "workspace:^",
-    "@xsai-transformers/vad": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4"
