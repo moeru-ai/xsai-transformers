@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { toWav } from '@xsai-transformers/vad'
-import processWorkletURL from '@xsai-transformers/vad/worker?worker&url'
+import { toWav } from 'xsai-transformers-vad'
+import processWorkletURL from 'xsai-transformers-vad/worker?worker&url'
 import InputFile from './InputFile.vue'
 
 const model = defineModel<File | null>({ required: true })
@@ -16,7 +16,7 @@ const uploadedFiles = ref<File[]>([])
 function handleFilesChange(files: File[]) {
   if (files.length > 0) {
     model.value = files[0]
-    
+
     // Create audio URL if it's an audio file
     if (files[0].type.startsWith('audio/')) {
       if (audioURL.value) URL.revokeObjectURL(audioURL.value)
@@ -158,11 +158,11 @@ function formatTime(seconds: number): string {
     <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
       {{ isRecording ? 'Recording...' : 'Audio Recorder' }}
     </h3>
-    
+
     <!-- Recording controls -->
     <div class="flex flex-col gap-4">
       <div class="flex flex-row items-center gap-4">
-        <button 
+        <button
           :disabled="model && !audioURL && !isRecording"
           rounded-lg bg="blue-100 dark:blue-900" px-4 py-2
           @click="isRecording ? stopRecording() : startRecording()"
@@ -182,9 +182,9 @@ function formatTime(seconds: number): string {
       <!-- Audio Player -->
       <div v-if="audioURL && !isRecording" class="mt-2 flex flex-col gap-2">
         <div class="text-sm text-gray-600 dark:text-gray-400">Recording Preview:</div>
-        <audio 
-          controls 
-          :src="audioURL" 
+        <audio
+          controls
+          :src="audioURL"
           class="w-full max-w-md rounded-lg bg-gray-100 dark:bg-slate-700"
         />
       </div>

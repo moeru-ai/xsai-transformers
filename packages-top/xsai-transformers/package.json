@@ -30,10 +30,6 @@
         "types": "./dist/transcription/worker.d.ts",
         "import": "./dist/transcription/worker.js"
       },
-      "./vad/worker": {
-        "types": "./dist/vad/worker.d.ts",
-        "import": "./dist/vad/worker.js"
-      },
       "./package.json": "./package.json"
     },
     "main": "./dist/index.js",
@@ -42,8 +38,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./embed/worker": "./src/embed/worker.ts",
-    "./transcription/worker": "./src/transcription/worker.ts",
-    "./vad/worker": "./src/vad/worker.ts"
+    "./transcription/worker": "./src/transcription/worker.ts"
   },
   "files": [
     "README.md",
