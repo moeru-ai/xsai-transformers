@@ -1,5 +1,5 @@
 {
-  "name": "xsai-transformers-vad",
+  "name": "@xsai-transformers/utils-vad",
   "type": "module",
   "version": "0.0.4",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
