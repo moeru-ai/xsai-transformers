@@ -22,6 +22,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.12.0",
     "@antfu/ni": "^24.3.0",
+    "@antfu/nip": "^0.1.0",
     "@importantimport/eslint-config": "^1.0.0-beta.2",
     "@importantimport/tsconfig": "^1.0.0-beta.2",
     "@pnpm/find-workspace-dir": "^1000.1.0",

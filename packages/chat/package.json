@@ -1,5 +1,5 @@
 {
-  "name": "xsai-transformers",
+  "name": "@xsai-transformers/chat",
   "type": "module",
   "version": "0.0.5",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/moeru-ai/xsai-transformers.git",
-    "directory": "packages-top/xsai-transformers"
+    "directory": "packages/chat"
   },
   "bugs": "https://github.com/moeru-ai/xsai-transformers/issues",
   "publishConfig": {
@@ -22,17 +22,9 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
-      "./chat/worker": {
-        "types": "./dist/chat/worker.d.ts",
-        "import": "./dist/chat/worker.js"
-      },
-      "./embed/worker": {
-        "types": "./dist/embed/worker.d.ts",
-        "import": "./dist/embed/worker.js"
-      },
-      "./transcription/worker": {
-        "types": "./dist/transcription/worker.d.ts",
-        "import": "./dist/transcription/worker.js"
+      "./worker": {
+        "types": "./dist/worker/index.d.ts",
+        "default": "./dist/worker/index.js"
       },
       "./package.json": "./package.json"
     },
@@ -41,8 +33,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./embed/worker": "./src/embed/worker.ts",
-    "./transcription/worker": "./src/transcription/worker.ts"
+    "./worker": "./src/worker/index.ts"
   },
   "files": [
     "README.md",
@@ -64,12 +55,13 @@
   "dependencies": {
     "@huggingface/transformers": "^3.5.0",
     "@xsai-ext/shared-providers": "catalog:",
-    "@xsai-transformers/chat": "workspace:^",
-    "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/shared": "workspace:^",
-    "@xsai-transformers/transcription": "workspace:^",
-    "@xsai/embed": "catalog:",
+    "@xsai/generate-object": "catalog:",
+    "@xsai/generate-text": "catalog:",
     "@xsai/shared": "catalog:",
-    "defu": "^6.1.4"
+    "@xsai/stream-object": "catalog:",
+    "@xsai/stream-text": "catalog:",
+    "defu": "^6.1.4",
+    "gpuu": "^1.0.0"
   }
 }

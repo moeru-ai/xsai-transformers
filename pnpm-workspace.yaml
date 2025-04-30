@@ -9,12 +9,14 @@ catalog:
   '@xsai-ext/providers-local': *xsai
   '@xsai-ext/shared-providers': *xsai
   '@xsai/embed': *xsai
+  '@xsai/generate-object': *xsai
   '@xsai/generate-speech': *xsai
   '@xsai/generate-text': *xsai
   '@xsai/generate-transcription': *xsai
   '@xsai/model': *xsai
   '@xsai/shared': *xsai
   '@xsai/shared-chat': *xsai
+  '@xsai/stream-object': *xsai
   '@xsai/stream-text': *xsai
   '@xsai/tool': *xsai
   '@xsai/utils-chat': *xsai
