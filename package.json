@@ -35,7 +35,6 @@
     "bumpp": "^10.1.0",
     "changelogithub": "^13.13.0",
     "eslint": "^9.25.0",
-    "eslint-plugin-format": "^1.0.1",
     "lint-staged": "^15.5.1",
     "pkgroll": "^2.12.1",
     "rollup": "^4.40.0",
