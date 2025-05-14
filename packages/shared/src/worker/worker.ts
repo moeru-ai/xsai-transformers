@@ -45,7 +45,7 @@ export const createTransformersWorker = <
 
       try {
         let onProgress: LoadOptionProgressCallback | undefined
-        if (options != null && 'onProgress' in options && options.onProgress != null) {
+        if (options?.onProgress != null) {
           onProgress = options?.onProgress
           delete options?.onProgress
         }
@@ -92,7 +92,7 @@ export const createTransformersWorker = <
           })
         }
 
-        worker?.addEventListener('message', (event: MessageEvent<E>) => {
+        worker!.addEventListener('message', (event: MessageEvent<E>) => {
           if (event.data.type !== 'status' || (event.data.data as unknown as { status: 'loading' | 'ready' }).status !== 'ready')
             return
 
