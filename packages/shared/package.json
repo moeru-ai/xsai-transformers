@@ -26,6 +26,10 @@
         "types": "./dist/base64/index.d.ts",
         "default": "./dist/base64/index.js"
       },
+      "./worker": {
+        "types": "./dist/worker/index.d.ts",
+        "default": "./dist/worker/index.js"
+      },
       "./types": {
         "types": "./dist/types/index.d.ts",
         "default": "./dist/types/index.js"
@@ -38,7 +42,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./base64": "./src/base64/index.ts",
-    "./types": "./src/types/index.ts"
+    "./types": "./src/types/index.ts",
+    "./worker": "./src/worker/index.ts"
   },
   "files": [
     "README.md",

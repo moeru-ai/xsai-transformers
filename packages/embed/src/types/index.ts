@@ -8,47 +8,24 @@ export enum MessageStatus {
 
 export type { ProgressInfo }
 
-export interface WorkerMessageBaseEvent<T, D> {
-  data: D
-  type: T
+export interface Extract {
+  options?: FeatureExtractionPipelineOptions
+  text: string | string[]
 }
 
-export type WorkerMessageEvent = {
-  [K in keyof WorkerMessageEvents]: WorkerMessageBaseEvent<K, WorkerMessageEvents[K]>;
-}[keyof WorkerMessageEvents]
-
-export interface WorkerMessageEvents<T = FeatureExtractionPipelineOptions> {
-  error: {
-    error?: unknown
-    message?: string
-  }
-  extract: {
+export interface ExtractResult {
+  input: {
     options?: FeatureExtractionPipelineOptions
     text: string | string[]
   }
-  extractResult: {
-    input: {
-      options?: FeatureExtractionPipelineOptions
-      text: string | string[]
-    }
-    output: {
-      data: number[]
-      dims: number[]
-    }
+  output: {
+    data: number[]
+    dims: number[]
   }
-  info: {
-    message: string
-  }
-  load: {
-    modelId: string
-    options?: LoadOptions<T>
-    task: string
-  }
-  progress: {
-    progress: ProgressInfo
-  }
-  status: {
-    message?: string
-    status: MessageStatus
-  }
+}
+
+export interface Load<T = FeatureExtractionPipelineOptions> {
+  modelId: string
+  options?: LoadOptions<T>
+  task: string
 }
