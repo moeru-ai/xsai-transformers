@@ -12,7 +12,7 @@ import {
 } from '@huggingface/transformers'
 import { decodeBase64 } from '@xsai-transformers/shared/base64'
 import defu from 'defu'
-import { check } from 'gpuu/webgpu'
+import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import type { WorkerMessageEvent } from '../types'
 
@@ -49,7 +49,7 @@ const base64ToFeatures = async (base64Audio: string): Promise<Float32Array> => {
 
 const load = async (modelId: string, options?: PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>) => {
   try {
-    const device = ((await check()).supported) ? 'webgpu' : 'wasm'
+    const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
 
     const opts = defu<PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>, PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>[]>(options, {
       device,

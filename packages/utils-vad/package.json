@@ -60,7 +60,7 @@
     "@xsai/generate-transcription": "catalog:",
     "@xsai/shared": "catalog:",
     "defu": "^6.1.4",
-    "gpuu": "^1.0.2",
+    "gpuu": "^1.0.3",
     "js-base64": "^3.7.7"
   }
 }

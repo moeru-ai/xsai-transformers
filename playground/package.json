@@ -37,7 +37,7 @@
     "@types/audioworklet": "^0.0.75",
     "@unocss/reset": "^66.1.1",
     "@vitejs/plugin-vue": "^5.2.4",
-    "@vueuse/core": "^13.1.0",
+    "@vueuse/core": "^13.2.0",
     "@webgpu/types": "^0.1.60",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",

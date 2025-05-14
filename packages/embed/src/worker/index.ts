@@ -5,16 +5,11 @@ import type { LoadMessageEvents, ProcessMessageEvents, WorkerMessageEvent } from
 
 import { pipeline } from '@huggingface/transformers'
 import { defu } from 'defu'
-import { check } from 'gpuu/webgpu'
+import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import type { Extract, Load } from '../types'
 
 import { MessageStatus } from '../types'
-
-const isWebGPUSupported = async (): Promise<boolean> => {
-  const result = await check()
-  return result.supported
-}
 
 // eslint-disable-next-line @masknet/no-top-level
 let embed: FeatureExtractionPipeline
