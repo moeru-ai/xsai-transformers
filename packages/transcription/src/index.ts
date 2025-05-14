@@ -5,7 +5,7 @@ import type { CommonRequestOptions } from '@xsai/shared'
 import { encodeBase64 } from '@xsai-transformers/shared/base64'
 import defu from 'defu'
 
-import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './worker'
+import type { LoadOptionProgressCallback, LoadOptions, WorkerMessageEvent } from './types'
 
 export type LoadableTranscriptionProvider<P, T = string, T2 = undefined> = P & {
   loadTranscribe: (model: (string & {}) | T, options?: T2) => Promise<void>
@@ -17,10 +17,10 @@ export const createTranscriptionProvider
 (
   createOptions: CreateProviderOptions,
 ): LoadableTranscriptionProvider<TranscriptionProviderWithExtraOptions<T, T2>, T, T2> => {
-  let worker: Worker
+  let worker: undefined | Worker
   let isReady = false
   let isLoading = false
-  let _options: T2
+  let _options: T2 | undefined
 
   const loadModel = async (model: (string & {}) | T, options?: T2) => {
     _options = options
@@ -41,9 +41,10 @@ export const createTranscriptionProvider
         if (!isLoading && !isReady && !worker) {
           try {
             const workerURL = new URL(createOptions.baseURL)
+            const workerURLString = workerURL.searchParams.get('worker-url')
 
-            if (!worker)
-              worker = new Worker(workerURL.searchParams.get('worker-url'), { type: 'module' })
+            if (!worker && workerURLString)
+              worker = new Worker(workerURLString, { type: 'module' })
             if (!worker)
               throw new Error('Worker not initialized')
 
@@ -71,7 +72,7 @@ export const createTranscriptionProvider
           })
         }
 
-        worker.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
+        worker?.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
           if (event.data.type !== 'status' || event.data.data.status !== 'ready')
             return
 
@@ -98,7 +99,7 @@ export const createTranscriptionProvider
       worker = undefined
     },
     transcription: (model, options) => Object.assign(createOptions, {
-      fetch: async (_, init: RequestInit) => {
+      fetch: async (_: any, init: RequestInit) => {
         return new Promise<Response>((resolve, reject) => {
           // eslint-disable-next-line @masknet/no-then, sonarjs/no-nested-functions
           loadModel(model, options).then(() => {
@@ -160,7 +161,7 @@ export const createTranscriptionProvider
               file.arrayBuffer().then((audioData) => {
                 const base64 = encodeBase64(audioData)
 
-                worker.postMessage({
+                worker?.postMessage({
                   data: {
                     audio: base64,
                     options: defu(options, _options),

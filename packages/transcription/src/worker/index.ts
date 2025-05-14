@@ -14,11 +14,9 @@ import { decodeBase64 } from '@xsai-transformers/shared/base64'
 import defu from 'defu'
 import { check } from 'gpuu/webgpu'
 
-import type { WorkerMessageEvent } from './types'
+import type { WorkerMessageEvent } from '../types'
 
-import { MessageStatus } from './types'
-
-export type * from './types'
+import { MessageStatus } from '../types'
 
 const MAX_NEW_TOKENS = 64
 // eslint-disable-next-line @masknet/no-top-level
@@ -63,7 +61,8 @@ const load = async (modelId: string, options?: PipelineOptionsFrom<typeof pipeli
     self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies WorkerMessageEvent)
     self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies WorkerMessageEvent)
 
-    // @ts-expect-error - TS2590: Expression produces a union type that is too complex to represent.
+    // eslint-disable-next-line ts/ban-ts-comment
+    // @ts-ignore - TS2590: Expression produces a union type that is too complex to represent.
     asr = await pipeline('automatic-speech-recognition', modelId, opts)
 
     await asr.model.generate({
