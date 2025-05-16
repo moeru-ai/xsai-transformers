@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/root",
   "type": "module",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "packageManager": "pnpm@10.11.0",
   "repository": "github:moeru-ai/xsai-transformers",
