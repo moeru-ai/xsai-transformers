@@ -1,51 +1,29 @@
-import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-transformers/shared/types'
+import type { LoadOptionProgressCallback, ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-transformers/shared/types'
 
 export enum MessageStatus {
   Loading = 'loading',
   Ready = 'ready',
 }
 
-export type LoadOptionProgressCallback = (progress: ProgressInfo) => Promise<void> | void
-export type LoadOptions = FeatureExtractionPipelineOptions & Omit<ModelSpecificPretrainedOptions & PretrainedOptions, 'progress_callback'> & { onProgress?: LoadOptionProgressCallback }
-export type { ProgressInfo }
-
-export interface WorkerMessageBaseEvent<T, D> {
-  data: D
-  type: T
+export interface Load {
+  modelId: string
+  options?: LoadOptions
+  task: string
 }
 
-export type WorkerMessageEvent = {
-  [K in keyof WorkerMessageEvents]: WorkerMessageBaseEvent<K, WorkerMessageEvents[K]>;
-}[keyof WorkerMessageEvents]
+export type LoadOptions = Omit<ModelSpecificPretrainedOptions & PretrainedOptions, 'progress_callback'> & { language?: string } & { onProgress?: LoadOptionProgressCallback }
+export type { ProgressInfo }
 
-export interface WorkerMessageEvents {
-  error: {
-    error?: unknown
-    message?: string
-  }
-  info: {
-    message: string
-  }
-  load: {
-    modelId: string
-    options?: LoadOptions
-    task: string
-  }
-  progress: {
-    progress: ProgressInfo
-  }
-  status: {
-    message?: string
-    status: MessageStatus
-  }
-  transcribe: {
-    audio: string
-    options?: any
-  }
-  transcribeResult: {
-    output: {
-      text: string
-    }
+export interface Transcribe {
+  /**
+   * Base64 encoded audio data.
+   */
+  audio: string
+  options: { language: string }
+}
+
+export interface TranscribeResult {
+  output: {
+    text: string
   }
 }

@@ -2,14 +2,18 @@ import type { ProgressInfo } from '@huggingface/transformers'
 
 import type { LoadOptionProgressCallback } from '../types'
 
-export type LoadMessageEvents<D = undefined, T extends string = string> =
+export type ErrorMessageEvents<E = unknown> =
+  | WorkerMessageEvent<{ error?: E, message?: string }, 'error'>
+
+export type LoadMessageEvents<D = undefined, T extends string = string, E = unknown> =
+  | ErrorMessageEvents<E>
   | WorkerMessageEvent<D, T>
-  | WorkerMessageEvent<{ error?: unknown, message?: string }, 'error'>
   | WorkerMessageEvent<{ message: string }, 'info'>
   | WorkerMessageEvent<{ message?: string, status: 'loading' | 'ready' }, 'status'>
   | WorkerMessageEvent<{ progress: ProgressInfo }, 'progress'>
 
-export type ProcessMessageEvents<D = unknown, T = unknown> =
+export type ProcessMessageEvents<D = unknown, T = unknown, E = unknown> =
+  | ErrorMessageEvents<E>
   | WorkerMessageEvent<D, T>
 
 export interface WorkerMessageEvent<D, T> {
@@ -33,7 +37,6 @@ export const createTransformersWorker = <
     if (!payload)
       throw new Error('Payload is required')
 
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     return new Promise<void>((resolve, reject) => {
       if (!createOptions.workerURL)
         throw new Error('Worker URL is required')
@@ -51,30 +54,23 @@ export const createTransformersWorker = <
         }
 
         if (!isLoading && !isReady && !worker) {
-          try {
-            let workerURLString: null | string
-            if (createOptions.workerURL instanceof URL) {
-              const workerURL = new URL(createOptions.workerURL)
-              workerURLString = workerURL.searchParams.get('worker-url')
-            }
-            else {
-              workerURLString = createOptions.workerURL
-            }
-            if (!workerURLString)
-              throw new Error('Worker URL is required')
-
-            if (!worker)
-              worker = new Worker(workerURLString, { type: 'module' })
-            if (!worker)
-              throw new Error('Worker not initialized')
-
-            worker.postMessage(payload)
+          let workerURLString: null | string
+          if (createOptions.workerURL instanceof URL) {
+            const workerURL = new URL(createOptions.workerURL)
+            workerURLString = workerURL.searchParams.get('worker-url')
           }
-          catch (err) {
-            isLoading = false
-            reject(err)
-            return
+          else {
+            workerURLString = createOptions.workerURL
           }
+          if (!workerURLString)
+            throw new Error('Worker URL is required')
+
+          if (!worker)
+            worker = new Worker(workerURLString, { type: 'module' })
+          if (!worker)
+            throw new Error('Worker not initialized')
+
+          worker.postMessage(payload)
 
           worker.addEventListener('message', (event: MessageEvent<E>) => {
             switch (event.data.type) {

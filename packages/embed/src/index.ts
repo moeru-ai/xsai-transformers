@@ -1,6 +1,6 @@
 import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
 import type { CreateProviderOptions, EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
-import type { LoadOptions } from '@xsai-transformers/shared/types'
+import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
 
@@ -28,7 +28,15 @@ export const createEmbedProvider = <
   }
 
   const worker = createTransformersWorker({ workerURL })
-  const loadEmbed = async (model: (string & {}) | T, options?: T2) => worker.load<Load>({ data: { modelId: model, task: 'feature-extraction' }, type: 'load' }, options)
+  const loadEmbed = async (model: (string & {}) | T, options?: T2) => {
+    let onProgress: LoadOptionProgressCallback | undefined
+    if (options && 'onProgress' in options && typeof options.onProgress === 'function') {
+      onProgress = options.onProgress
+      delete options.onProgress
+    }
+
+    return worker.load<Load>({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' }, { onProgress })
+  }
   const terminateEmbed = () => worker.dispose()
 
   return {
@@ -48,13 +56,16 @@ export const createEmbedProvider = <
           LoadOptions<FeatureExtractionPipelineOptions>[]
         >(options, { normalize: true, pooling: 'mean' })
 
-        const res = await worker.process<Extract, ExtractResult>({ data: { options: processOptions, text }, type: 'extract' }, 'extractResult')
-        const result = {
+        const res = await worker.process<Extract, ExtractResult>({
+          data: { options: processOptions, text },
+          type: 'extract',
+        }, 'extractResult')
+        const result: EmbedResponse = {
           data: [{ embedding: res.output.data, index: 0, object: 'embedding' }],
           model,
           object: 'list',
           usage: { prompt_tokens: 0, total_tokens: 0 },
-        } satisfies EmbedResponse
+        }
 
         const encoder = new TextEncoder()
         return new Response(encoder.encode(JSON.stringify(result)))

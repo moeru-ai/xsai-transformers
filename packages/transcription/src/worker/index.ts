@@ -4,6 +4,7 @@ import type {
   Tensor,
 } from '@huggingface/transformers'
 import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
+import type { ErrorMessageEvents, LoadMessageEvents, ProcessMessageEvents, WorkerMessageEvent } from '@xsai-transformers/shared/worker'
 
 import {
   full,
@@ -14,7 +15,7 @@ import { decodeBase64 } from '@xsai-transformers/shared/base64'
 import defu from 'defu'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
-import type { WorkerMessageEvent } from '../types'
+import type { Load, Transcribe } from '../types'
 
 import { MessageStatus } from '../types'
 
@@ -54,12 +55,12 @@ const load = async (modelId: string, options?: PipelineOptionsFrom<typeof pipeli
     const opts = defu<PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>, PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>[]>(options, {
       device,
       progress_callback: (progress) => {
-        globalThis.postMessage({ data: { progress }, type: 'progress' } satisfies WorkerMessageEvent)
+        globalThis.postMessage({ data: { progress }, type: 'progress' } satisfies LoadMessageEvents)
       },
     })
 
-    self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies WorkerMessageEvent)
-    self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies WorkerMessageEvent)
+    self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies LoadMessageEvents)
+    self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies LoadMessageEvents)
 
     // eslint-disable-next-line ts/ban-ts-comment
     // @ts-ignore - TS2590: Expression produces a union type that is too complex to represent.
@@ -70,17 +71,17 @@ const load = async (modelId: string, options?: PipelineOptionsFrom<typeof pipeli
       max_new_tokens: 1,
     } as Record<string, unknown>)
 
-    self.postMessage({ data: { message: 'Ready!', status: MessageStatus.Ready }, type: 'status' } satisfies WorkerMessageEvent)
+    self.postMessage({ data: { message: 'Ready!', status: MessageStatus.Ready }, type: 'status' } satisfies LoadMessageEvents)
   }
   catch (err) {
-    self.postMessage({ data: { error: err }, type: 'error' } satisfies WorkerMessageEvent)
+    self.postMessage({ data: { error: err }, type: 'error' } satisfies LoadMessageEvents)
     throw err
   }
 }
 
-const transcribe = async (audio: string, options: { language: string }) => {
+const transcribe = async (audio: string, options: { language?: string }) => {
   if (!asr) {
-    globalThis.postMessage({ data: { error: 'Model not loaded yet.' }, type: 'error' } satisfies WorkerMessageEvent)
+    globalThis.postMessage({ data: { error: 'Model not loaded yet.' }, type: 'error' } satisfies ErrorMessageEvents)
     return
   }
 
@@ -104,15 +105,15 @@ const transcribe = async (audio: string, options: { language: string }) => {
 
     const outputText = asr.tokenizer.batch_decode(outputs as Tensor, { skip_special_tokens: true })
 
-    globalThis.postMessage({ data: { output: { text: outputText.join('') } }, type: 'transcribeResult' } satisfies WorkerMessageEvent)
+    globalThis.postMessage({ data: { output: { text: outputText.join('') } }, type: 'transcribeResult' } satisfies ProcessMessageEvents)
   }
   catch (err) {
-    globalThis.postMessage({ data: { error: err }, type: 'error' } satisfies WorkerMessageEvent)
+    globalThis.postMessage({ data: { error: err }, type: 'error' } satisfies ErrorMessageEvents)
   }
 }
 
 // eslint-disable-next-line @masknet/no-top-level
-self.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
+self.addEventListener('message', (event: MessageEvent<WorkerMessageEvent<Load, 'load'> | WorkerMessageEvent<Transcribe, 'transcribe'>>) => {
   const { data, type } = event.data
 
   switch (type) {
@@ -120,15 +121,20 @@ self.addEventListener('message', (event: MessageEvent<WorkerMessageEvent>) => {
       load(event.data.data.modelId, event.data.data.options)
       break
     case 'transcribe':
-      if ('audio' in data) {
-        if (!('language' in data))
-          data.options.language = 'english'
+      if (!('audio' in data)) {
+        globalThis.postMessage({ data: { error: 'Invalid data format for transcribe message.' }, type: 'error' })
+        return
+      }
+      if (!('language' in data)) {
+        if (data.options == null) {
+          data.options = { language: 'en' }
+        }
+        else {
+          data.options.language = 'en'
+        }
+      }
 
-        transcribe(event.data.data.audio, event.data.data.options)
-      }
-      else {
-        globalThis.postMessage({ data: { error: 'Invalid data format for transcribe message.' }, type: 'error' } satisfies WorkerMessageEvent)
-      }
+      transcribe(event.data.data.audio, event.data.data.options)
 
       break
   }

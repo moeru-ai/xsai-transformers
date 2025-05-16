@@ -14,6 +14,10 @@ const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
 const loadingItemsSet = new Set<string>()
 const input = ref<File>()
 const results = ref<any>()
+
+const isLoading = ref(false)
+const isTranscribing = ref(false)
+
 const transformersProvider = ref<ReturnType<typeof createTranscriptionProvider>>()
 
 onMounted(() => {
@@ -21,12 +25,16 @@ onMounted(() => {
 })
 
 async function load() {
-  await transformersProvider.value.loadTranscribe(modelId.value, {
+  isLoading.value = true
+
+  try {
+    await transformersProvider.value.loadTranscribe(modelId.value, {
     dtype: {
       encoder_model: 'fp16',
       decoder_model_merged: 'q4',
     },
     device: 'webgpu',
+    language: 'en',
     onProgress: (progress) => {
       switch (progress.status) {
         case 'initiate':
@@ -55,11 +63,18 @@ async function load() {
       }
     },
   })
+  } finally {
+    isLoading.value = false
+  }
 }
 
 async function execute() {
   if (!input.value)
     return
+  if (isTranscribing.value)
+    return
+
+  isTranscribing.value = true
 
   try {
     const result = await generateTranscription({
@@ -71,6 +86,9 @@ async function execute() {
   }
   catch (err) {
     console.error(err)
+  }
+  finally {
+    isTranscribing.value = false
   }
 }
 
@@ -111,8 +129,18 @@ async function handleLoad() {
       <!-- Recording functionality -->
       <Record v-model="input" />
       <div flex flex-row gap-2>
-        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 @click="execute">
-          Transcribe
+        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 @click="execute" flex items-center gap-2>
+          <template v-if="isLoading">
+            <div i-svg-spinners:180-ring />
+            <span>Loading...</span>
+          </template>
+          <template v-else-if="isTranscribing">
+            <div i-svg-spinners:180-ring />
+            <span>Transcribing...</span>
+          </template>
+          <template v-else>
+            Transcribe
+          </template>
         </button>
       </div>
       <div flex flex-col gap-2>
