@@ -117,10 +117,10 @@ async function handleLoad() {
           </template>
           <template v-else-if="isExecuting">
             <div i-svg-spinners:180-ring />
-            <span>Transcribing...</span>
+            <span>Embedding...</span>
           </template>
           <template v-else>
-            Transcribe
+            Embed
           </template>
         </button>
       </div>
