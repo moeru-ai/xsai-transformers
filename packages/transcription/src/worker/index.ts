@@ -11,8 +11,8 @@ import {
   pipeline,
   TextStreamer,
 } from '@huggingface/transformers'
-import { decodeBase64 } from '@xsai-transformers/shared/base64'
-import defu from 'defu'
+import { decodeBase64 } from '@moeru/std/base64'
+import { merge } from '@moeru/std/merge'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import type { Load, Transcribe } from '../types'
@@ -52,12 +52,12 @@ const load = async (modelId: string, options?: PipelineOptionsFrom<typeof pipeli
   try {
     const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
 
-    const opts = defu<PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>, PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>[]>(options, {
+    const opts = merge<PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>>({
       device,
       progress_callback: (progress) => {
         globalThis.postMessage({ data: { progress }, type: 'progress' } satisfies LoadMessageEvents)
       },
-    })
+    }, options)
 
     self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies LoadMessageEvents)
     self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies LoadMessageEvents)

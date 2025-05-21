@@ -22,10 +22,6 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       },
-      "./base64": {
-        "types": "./dist/base64/index.d.ts",
-        "default": "./dist/base64/index.js"
-      },
       "./worker": {
         "types": "./dist/worker/index.d.ts",
         "default": "./dist/worker/index.js"
@@ -41,7 +37,6 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./base64": "./src/base64/index.ts",
     "./types": "./src/types/index.ts",
     "./worker": "./src/worker/index.ts"
   },
@@ -58,7 +53,6 @@
     "@huggingface/transformers": "^3.5.1",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai/shared": "catalog:",
-    "defu": "^6.1.4",
     "onnxruntime-common": "^1.22.0"
   }
 }

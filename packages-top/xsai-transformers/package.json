@@ -62,14 +62,10 @@
     }
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.5.1",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai-transformers/chat": "workspace:^",
     "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/shared": "workspace:^",
-    "@xsai-transformers/transcription": "workspace:^",
-    "@xsai/embed": "catalog:",
-    "@xsai/shared": "catalog:",
-    "defu": "^6.1.4"
+    "@xsai-transformers/transcription": "workspace:^"
   }
 }

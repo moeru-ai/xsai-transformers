@@ -4,8 +4,8 @@ import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
 
+import { merge } from '@moeru/std/merge'
 import { createTransformersWorker } from '@xsai-transformers/shared/worker'
-import defu from 'defu'
 
 import type { Extract, ExtractResult, Load } from './types'
 
@@ -51,10 +51,7 @@ export const createEmbedProvider = <
         delete body.input
         delete body.onProgress
 
-        const processOptions = defu<
-          LoadOptions<FeatureExtractionPipelineOptions>,
-          LoadOptions<FeatureExtractionPipelineOptions>[]
-        >(options, { normalize: true, pooling: 'mean' })
+        const processOptions = merge<LoadOptions<FeatureExtractionPipelineOptions>>({ normalize: true, pooling: 'mean' }, options)
 
         const res = await worker.process<Extract, ExtractResult>({
           data: { options: processOptions, text },

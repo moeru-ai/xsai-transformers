@@ -4,7 +4,7 @@ import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 import type { LoadMessageEvents, ProcessMessageEvents, WorkerMessageEvent } from '@xsai-transformers/shared/worker'
 
 import { pipeline } from '@huggingface/transformers'
-import { defu } from 'defu'
+import { merge } from '@moeru/std/merge'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import type { Extract, Load } from '../types'
@@ -24,12 +24,12 @@ const load = async (modelId: string, options?: Omit<PipelineOptionsFrom<typeof p
   try {
     const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
 
-    const opts = defu<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>, PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>[]>(options, {
+    const opts = merge<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>>({
       device,
       progress_callback: (progress) => {
         self.postMessage({ data: { progress }, type: 'progress' } satisfies LoadMessageEvents)
       },
-    })
+    }, options)
 
     self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies LoadMessageEvents)
     self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies LoadMessageEvents)

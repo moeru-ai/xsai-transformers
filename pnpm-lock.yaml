@@ -123,9 +123,6 @@ importers:
 
   packages-top/xsai-transformers:
     dependencies:
-      '@huggingface/transformers':
-        specifier: ^3.5.1
-        version: 3.5.1
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.2
@@ -141,15 +138,6 @@ importers:
       '@xsai-transformers/transcription':
         specifier: workspace:^
         version: link:../../packages/transcription
-      '@xsai/embed':
-        specifier: 'catalog:'
-        version: 0.2.2
-      '@xsai/shared':
-        specifier: 'catalog:'
-        version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
@@ -180,9 +168,6 @@ importers:
       '@xsai/stream-text':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       gpuu:
         specifier: ^1.0.3
         version: 1.0.3
@@ -195,6 +180,9 @@ importers:
       '@huggingface/transformers':
         specifier: ^3.5.1
         version: 3.5.1
+      '@moeru/std':
+        specifier: 0.1.0-beta.1
+        version: 0.1.0-beta.1
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.2
@@ -207,9 +195,6 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       gpuu:
         specifier: ^1.0.3
         version: 1.0.3
@@ -228,9 +213,6 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       onnxruntime-common:
         specifier: ^1.22.0
         version: 1.22.0
@@ -252,9 +234,6 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
@@ -264,6 +243,9 @@ importers:
       '@huggingface/transformers':
         specifier: ^3.5.1
         version: 3.5.1
+      '@moeru/std':
+        specifier: 0.1.0-beta.1
+        version: 0.1.0-beta.1
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.2.2
@@ -279,15 +261,9 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       gpuu:
         specifier: ^1.0.3
         version: 1.0.3
-      js-base64:
-        specifier: ^3.7.7
-        version: 3.7.7
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
@@ -312,15 +288,9 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       gpuu:
         specifier: ^1.0.3
         version: 1.0.3
-      js-base64:
-        specifier: ^3.7.7
-        version: 3.7.7
       web-worker:
         specifier: ^1.5.0
         version: 1.5.0
@@ -385,9 +355,6 @@ importers:
       '@xsai/shared':
         specifier: 'catalog:'
         version: 0.2.2
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       es-toolkit:
         specifier: ^1.38.0
         version: 1.38.0
@@ -949,6 +916,9 @@ packages:
     engines: {node: '>= 18'}
     peerDependencies:
       eslint: '>= 8'
+
+  '@moeru/std@0.1.0-beta.1':
+    resolution: {integrity: sha512-ImfoMBchZP+F4aos2nFmlcipcgIhT+ZkUUVWB/bBHEqyB/w/nbI/xgA8a1ibJUtG7RcQnQH+SKom0r4/1xCWqA==}
 
   '@napi-rs/wasm-runtime@0.2.9':
     resolution: {integrity: sha512-OKRBiajrrxB9ATokgEQoG87Z25c67pCpYcCwmXYX8PBftC9pBfN18gnm/fh1wurSLEKIAt+QRFLFCQISrb66Jg==}
@@ -2809,9 +2779,6 @@ packages:
     resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
     hasBin: true
 
-  js-base64@3.7.7:
-    resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
-
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
@@ -4559,6 +4526,8 @@ snapshots:
   '@masknet/eslint-plugin@0.3.0(eslint@9.27.0(jiti@2.4.2))':
     dependencies:
       eslint: 9.27.0(jiti@2.4.2)
+
+  '@moeru/std@0.1.0-beta.1': {}
 
   '@napi-rs/wasm-runtime@0.2.9':
     dependencies:
@@ -6704,8 +6673,6 @@ snapshots:
   jiti@1.21.7: {}
 
   jiti@2.4.2: {}
-
-  js-base64@3.7.7: {}
 
   js-yaml@4.1.0:
     dependencies:

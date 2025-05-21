@@ -61,7 +61,6 @@
     "@xsai/shared": "catalog:",
     "@xsai/stream-object": "catalog:",
     "@xsai/stream-text": "catalog:",
-    "defu": "^6.1.4",
     "gpuu": "^1.0.3"
   }
 }

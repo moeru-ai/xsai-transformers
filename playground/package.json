@@ -43,7 +43,6 @@
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
-    "defu": "^6.1.4",
     "es-toolkit": "^1.38.0",
     "superjson": "^2.2.2",
     "unplugin-vue-router": "^0.12.0",
