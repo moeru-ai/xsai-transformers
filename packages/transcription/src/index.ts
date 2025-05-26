@@ -3,7 +3,7 @@ import type { LoadOptionProgressCallback } from '@xsai-transformers/shared/types
 import type { GenerateTranscriptionResult } from '@xsai/generate-transcription'
 import type { CommonRequestOptions } from '@xsai/shared'
 
-import { encodeBase64 } from '@xsai-transformers/shared/base64'
+import { encodeBase64 } from '@moeru/std/base64'
 
 import type { Load, LoadOptions, Transcribe, TranscribeResult } from './types'
 
