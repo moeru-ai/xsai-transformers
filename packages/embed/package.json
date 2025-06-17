@@ -53,12 +53,12 @@
     }
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.5.1",
+    "@huggingface/transformers": "^3.5.2",
     "@moeru/std": "0.1.0-beta.1",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
-    "gpuu": "^1.0.3"
+    "gpuu": "^1.0.4"
   }
 }

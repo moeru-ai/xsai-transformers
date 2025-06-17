@@ -2,28 +2,28 @@ import type { ProgressInfo } from '@huggingface/transformers'
 
 import type { LoadOptionProgressCallback } from '../types'
 
-export type ErrorMessageEvents<E = unknown> =
-  | WorkerMessageEvent<{ error?: E, message?: string }, 'error'>
+export type ErrorMessageEvents<E = unknown>
+  = | WorkerMessageEvent<{ error?: E, message?: string }, 'error'>
 
-export type LoadMessageEvents<D = undefined, T extends string = string, E = unknown> =
-  | ErrorMessageEvents<E>
-  | WorkerMessageEvent<D, T>
-  | WorkerMessageEvent<{ message: string }, 'info'>
-  | WorkerMessageEvent<{ message?: string, status: 'loading' | 'ready' }, 'status'>
-  | WorkerMessageEvent<{ progress: ProgressInfo }, 'progress'>
+export type LoadMessageEvents<D = undefined, T extends string = string, E = unknown>
+  = | ErrorMessageEvents<E>
+    | WorkerMessageEvent<D, T>
+    | WorkerMessageEvent<{ message: string }, 'info'>
+    | WorkerMessageEvent<{ message?: string, status: 'loading' | 'ready' }, 'status'>
+    | WorkerMessageEvent<{ progress: ProgressInfo }, 'progress'>
 
-export type ProcessMessageEvents<D = unknown, T = unknown, E = unknown> =
-  | ErrorMessageEvents<E>
-  | WorkerMessageEvent<D, T>
+export type ProcessMessageEvents<D = unknown, T = unknown, E = unknown>
+  = | ErrorMessageEvents<E>
+    | WorkerMessageEvent<D, T>
 
 export interface WorkerMessageEvent<D, T> {
   data: D
   type: T
 }
 
-export type WorkerMessageEvents<D = undefined, T extends string = string> =
-  | LoadMessageEvents<D, T>
-  | ProcessMessageEvents<D, T>
+export type WorkerMessageEvents<D = undefined, T extends string = string>
+  = | LoadMessageEvents<D, T>
+    | ProcessMessageEvents<D, T>
 
 export const createTransformersWorker = <
   T extends { workerURL: string | undefined | URL },
@@ -111,7 +111,6 @@ export const createTransformersWorker = <
 
   const process = <ID = unknown, OD = unknown, E extends { data: ID, type: string } = { data: any, type: string }>(payload: E, onResultType: string, options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
     return new Promise<OD>((resolve, reject) => {
-      // eslint-disable-next-line @masknet/no-then
       ensureLoadBeforeProcess(options).then(() => {
         if (!worker || !isReady) {
           reject(new Error('Model not loaded'))

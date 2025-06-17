@@ -4,9 +4,9 @@ import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformer
 import { embed } from '@xsai/embed'
 import { serialize } from 'superjson'
 import { ref } from 'vue'
-
 import { createEmbedProvider } from 'xsai-transformers'
 import embedWorkerURL from 'xsai-transformers/embed/worker?worker&url'
+
 import Progress from '../components/Progress.vue'
 
 const modelId = ref('Xenova/all-MiniLM-L6-v2')
@@ -19,44 +19,6 @@ const isLoading = ref(false)
 const isExecuting = ref(false)
 
 const embedProvider = createEmbedProvider({ baseURL: `xsai-transformers:///?worker-url=${embedWorkerURL}` })
-
-async function load() {
-  isLoading.value = true
-
-  try {
-    await embedProvider.loadEmbed(modelId.value, {
-      onProgress: (progress) => {
-        switch (progress.status) {
-          case 'initiate':
-            if (loadingItemsSet.has(progress.file)) {
-              return
-            }
-
-            loadingItemsSet.add(progress.file)
-            loadingItems.value.push(progress)
-            break
-
-          case 'progress':
-            loadingItems.value = loadingItems.value.map((item) => {
-              if (item.file === progress.file) {
-                return { ...item, ...progress }
-              }
-
-              return item
-            })
-
-            break
-
-          case 'done':
-            // loadingItems.value = loadingItems.value.filter(item => item.file !== progress.file)
-            break
-        }
-      },
-    })
-  } finally {
-    isLoading.value = false
-  }
-}
 
 async function execute() {
   isExecuting.value = true
@@ -78,6 +40,45 @@ async function handleLoad() {
   await embedProvider.terminateEmbed()
   await load()
 }
+
+async function load() {
+  isLoading.value = true
+
+  try {
+    await embedProvider.loadEmbed(modelId.value, {
+      onProgress: (progress) => {
+        switch (progress.status) {
+          case 'done':
+            // loadingItems.value = loadingItems.value.filter(item => item.file !== progress.file)
+            break
+
+          case 'initiate':
+            if (loadingItemsSet.has(progress.file)) {
+              return
+            }
+
+            loadingItemsSet.add(progress.file)
+            loadingItems.value.push(progress)
+            break
+
+          case 'progress':
+            loadingItems.value = loadingItems.value.map((item) => {
+              if (item.file === progress.file) {
+                return { ...item, ...progress }
+              }
+
+              return item
+            })
+
+            break
+        }
+      },
+    })
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -97,8 +98,10 @@ async function handleLoad() {
       </div>
     </div>
     <div v-if="loadingItems.length > 0" class="w-full flex flex-col gap-2">
-      <Progress v-for="(item, index) of loadingItems" :key="index" :text="item.file"
-        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0" />
+      <Progress
+        v-for="(item, index) of loadingItems" :key="index" :text="item.file"
+        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0"
+      />
     </div>
   </div>
   <div flex flex-col gap-2>
@@ -110,7 +113,7 @@ async function handleLoad() {
         <textarea v-model="input" h-full w-full rounded-lg bg="neutral-100 dark:neutral-800" p-4 font-mono />
       </div>
       <div flex flex-row gap-2>
-        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 @click="execute" flex items-center gap-2>
+        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 flex items-center gap-2 @click="execute">
           <template v-if="isLoading">
             <div i-svg-spinners:180-ring />
             <span>Loading...</span>

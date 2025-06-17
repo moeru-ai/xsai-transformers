@@ -63,7 +63,15 @@ export const createTranscriptionProvider
           data: { audio: base64, options },
           type: 'transcribe',
         }, 'transcribeResult')
-        const result: GenerateTranscriptionResult = { text: res.output.text }
+
+        // TODO: GenerateTranscriptionResult should be typed based on options
+        const result: GenerateTranscriptionResult = {
+          duration: undefined as never,
+          language: undefined as never,
+          segments: undefined as never,
+          text: res.output.text,
+          words: undefined as never,
+        }
 
         const encoder = new TextEncoder()
         return new Response(encoder.encode(JSON.stringify(result)))

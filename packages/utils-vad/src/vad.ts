@@ -187,7 +187,6 @@ export class VAD {
   private async detectSpeech(buffer: Float32Array): Promise<boolean> {
     const input = new Tensor('float32', buffer, [1, buffer.length])
 
-    // eslint-disable-next-line @masknet/no-then
     this.inferenceChain = this.inferenceChain.then(() =>
       this.model({
         input,

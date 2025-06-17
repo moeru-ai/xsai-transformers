@@ -1,7 +1,7 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  text: string
   percentage?: number
+  text: string
   total?: number
 }>(), {
   percentage: 0,

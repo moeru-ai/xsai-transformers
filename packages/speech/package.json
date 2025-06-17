@@ -53,7 +53,7 @@
     }
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.5.1",
+    "@huggingface/transformers": "^3.5.2",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",

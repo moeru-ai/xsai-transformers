@@ -18,8 +18,8 @@ export interface VADConfig {
   speechThreshold: number
 }
 
-export type VADEventCallback<K extends keyof VADEvents> =
-  (event: VADEvents[K]) => void
+export type VADEventCallback<K extends keyof VADEvents>
+  = (event: VADEvents[K]) => void
 
 export interface VADEvents {
   // Debug info

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { toWav } from '@xsai-transformers/utils-vad'
 import processWorkletURL from '@xsai-transformers/utils-vad/worker?worker&url'
+import { ref } from 'vue'
+
 import InputFile from './InputFile.vue'
 
 const model = defineModel<File | null>({ required: true })
@@ -9,9 +10,15 @@ const model = defineModel<File | null>({ required: true })
 const isRecording = ref<boolean>(false)
 const mediaRecorder = ref<MediaRecorder | null>(null)
 const recordingTime = ref<number>(0)
-const recordingTimer = ref<number | null>(null)
-const audioURL = ref<string | null>(null)
+const recordingTimer = ref<null | number>(null)
+const audioURL = ref<null | string>(null)
 const uploadedFiles = ref<File[]>([])
+
+function formatTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+}
 
 function handleFilesChange(files: File[]) {
   if (files.length > 0) {
@@ -19,7 +26,8 @@ function handleFilesChange(files: File[]) {
 
     // Create audio URL if it's an audio file
     if (files[0].type.startsWith('audio/')) {
-      if (audioURL.value) URL.revokeObjectURL(audioURL.value)
+      if (audioURL.value)
+        URL.revokeObjectURL(audioURL.value)
       audioURL.value = URL.createObjectURL(files[0])
     }
   }
@@ -30,8 +38,8 @@ async function startRecording() {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         channelCount: 1,
-        sampleRate: 16000
-      }
+        sampleRate: 16000,
+      },
     })
 
     // Create AudioContext with desired sample rate
@@ -44,16 +52,17 @@ async function startRecording() {
 
     const pcmChunks: Float32Array[] = []
     const segments = ref<Array<{
-      buffer: Float32Array,
-      duration: number,
-      timestamp: number,
       audioSrc: string
+      buffer: Float32Array
+      duration: number
+      timestamp: number
     }>>([])
 
     // Handle audio data from the worklet
     workletNode.port.onmessage = (event) => {
       const { buffer } = event.data
-      if (!buffer) return
+      if (!buffer)
+        return
 
       // Create a copy of the buffer
       const chunk = new Float32Array(buffer.length)
@@ -69,10 +78,10 @@ async function startRecording() {
 
       // Store the segment
       segments.value.push({
+        audioSrc: URL.createObjectURL(audioBlob),
         buffer: chunk,
         duration,
         timestamp: Date.now(),
-        audioSrc: URL.createObjectURL(audioBlob),
       })
     }
 
@@ -82,11 +91,9 @@ async function startRecording() {
 
     // Store references for cleanup
     mediaRecorder.value = {
-      stream,
       audioContext,
-      source,
-      workletNode,
       pcmChunks,
+      source,
       stop: () => {
         workletNode.disconnect()
         source.disconnect()
@@ -119,7 +126,9 @@ async function startRecording() {
           clearInterval(recordingTimer.value)
           recordingTimer.value = null
         }
-      }
+      },
+      stream,
+      workletNode,
     } as any
 
     // Start recording timer
@@ -145,12 +154,6 @@ function stopRecording() {
     isRecording.value = false
   }
 }
-
-function formatTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
-}
 </script>
 
 <template>
@@ -172,8 +175,8 @@ function formatTime(seconds: number): string {
 
         <div v-if="isRecording" class="flex flex-row items-center gap-3 text-gray-600 dark:text-gray-300">
           <div class="relative">
-            <div class="h-3 w-3 rounded-full bg-red-500"></div>
-            <div class="absolute top-0 left-0 h-3 w-3 rounded-full bg-red-500 animate-ping opacity-75"></div>
+            <div class="h-3 w-3 rounded-full bg-red-500" />
+            <div class="absolute top-0 left-0 h-3 w-3 rounded-full bg-red-500 animate-ping opacity-75" />
           </div>
           <span class="font-mono text-lg">{{ formatTime(recordingTime) }}</span>
         </div>
@@ -181,7 +184,9 @@ function formatTime(seconds: number): string {
 
       <!-- Audio Player -->
       <div v-if="audioURL && !isRecording" class="mt-2 flex flex-col gap-2">
-        <div class="text-sm text-gray-600 dark:text-gray-400">Recording Preview:</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          Recording Preview:
+        </div>
         <audio
           controls
           :src="audioURL"
@@ -192,11 +197,13 @@ function formatTime(seconds: number): string {
 
     <!-- File Upload Section using InputFile component -->
     <div class="mt-2">
-      <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Or upload audio file:</div>
+      <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        Or upload audio file:
+      </div>
       <InputFile
         v-model="uploadedFiles"
         accept="audio/*"
-        @update:modelValue="handleFilesChange"
+        @update:model-value="handleFilesChange"
       >
         <template #default="{ isDragging, files }">
           <div

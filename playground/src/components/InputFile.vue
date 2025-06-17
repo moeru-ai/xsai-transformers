@@ -7,7 +7,7 @@ defineProps<{
   multiple?: boolean
 }>()
 
-const files = defineModel<File[]>({ required: false, default: () => [] })
+const files = defineModel<File[]>({ default: () => [], required: false })
 const firstFile = ref<File>()
 
 const isDragging = ref(false)

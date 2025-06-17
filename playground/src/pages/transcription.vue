@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/shared/types'
+
+import { createTranscriptionProvider } from '@xsai-transformers/transcription'
+import { generateTranscription } from '@xsai/generate-transcription'
 import { serialize } from 'superjson'
 import { onMounted, ref } from 'vue'
-
-import Progress from '../components/Progress.vue'
-import type { InitiateProgressInfo, ProgressStatusInfo } from '@xsai-transformers/shared/types'
-import { createTranscriptionProvider } from '@xsai-transformers/transcription'
 import transcribeWorkerURL from 'xsai-transformers/transcription/worker?worker&url'
-import { generateTranscription } from '@xsai/generate-transcription'
+
 import Record from '../components/AudioRecord.vue'
+import Progress from '../components/Progress.vue'
 
 const modelId = ref('onnx-community/whisper-large-v3-turbo')
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
@@ -23,50 +24,6 @@ const transformersProvider = ref<ReturnType<typeof createTranscriptionProvider>>
 onMounted(() => {
   transformersProvider.value = createTranscriptionProvider({ baseURL: `xsai-transformers:///?worker-url=${transcribeWorkerURL}` })
 })
-
-async function load() {
-  isLoading.value = true
-
-  try {
-    await transformersProvider.value.loadTranscribe(modelId.value, {
-    dtype: {
-      encoder_model: 'fp16',
-      decoder_model_merged: 'q4',
-    },
-    device: 'webgpu',
-    language: 'en',
-    onProgress: (progress) => {
-      switch (progress.status) {
-        case 'initiate':
-          if (loadingItemsSet.has(progress.file)) {
-            return
-          }
-
-          loadingItemsSet.add(progress.file)
-          loadingItems.value.push(progress)
-          break
-
-        case 'progress':
-          loadingItems.value = loadingItems.value.map((item) => {
-            if (item.file === progress.file) {
-              return { ...item, ...progress }
-            }
-
-            return item
-          })
-
-          break
-
-        case 'done':
-          // loadingItems.value = loadingItems.value.filter(item => item.file !== progress.file)
-          break
-      }
-    },
-  })
-  } finally {
-    isLoading.value = false
-  }
-}
 
 async function execute() {
   if (!input.value)
@@ -97,6 +54,50 @@ async function handleLoad() {
   await load()
 }
 
+async function load() {
+  isLoading.value = true
+
+  try {
+    await transformersProvider.value.loadTranscribe(modelId.value, {
+      device: 'webgpu',
+      dtype: {
+        decoder_model_merged: 'q4',
+        encoder_model: 'fp16',
+      },
+      language: 'en',
+      onProgress: (progress) => {
+        switch (progress.status) {
+          case 'done':
+          // loadingItems.value = loadingItems.value.filter(item => item.file !== progress.file)
+            break
+
+          case 'initiate':
+            if (loadingItemsSet.has(progress.file)) {
+              return
+            }
+
+            loadingItemsSet.add(progress.file)
+            loadingItems.value.push(progress)
+            break
+
+          case 'progress':
+            loadingItems.value = loadingItems.value.map((item) => {
+              if (item.file === progress.file) {
+                return { ...item, ...progress }
+              }
+
+              return item
+            })
+
+            break
+        }
+      },
+    })
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -116,8 +117,10 @@ async function handleLoad() {
       </div>
     </div>
     <div v-if="loadingItems.length > 0" class="w-full flex flex-col gap-2">
-      <Progress v-for="(item, index) of loadingItems" :key="index" :text="item.file"
-        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0" />
+      <Progress
+        v-for="(item, index) of loadingItems" :key="index" :text="item.file"
+        :percentage="'progress' in item ? item.progress || 0 : 0" :total="'total' in item ? item.total || 0 : 0"
+      />
     </div>
   </div>
   <div flex flex-col gap-2>
@@ -129,7 +132,7 @@ async function handleLoad() {
       <!-- Recording functionality -->
       <Record v-model="input" />
       <div flex flex-row gap-2>
-        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 @click="execute" flex items-center gap-2>
+        <button rounded-lg bg="blue-100 dark:blue-900" px-4 py-2 flex items-center gap-2 @click="execute">
           <template v-if="isLoading">
             <div i-svg-spinners:180-ring />
             <span>Loading...</span>

@@ -50,7 +50,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@huggingface/transformers": "^3.5.1",
+    "@huggingface/transformers": "^3.5.2",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai/shared": "catalog:",
     "onnxruntime-common": "^1.22.0"
