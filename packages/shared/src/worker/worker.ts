@@ -30,7 +30,6 @@ export interface WorkerOptions {
   workerURL?: string | undefined | URL
 }
 
-/* eslint-disable sonarjs/cognitive-complexity */
 export const createTransformersWorker = <
   T extends WorkerOptions,
   T2 extends { onProgress?: LoadOptionProgressCallback },
@@ -114,7 +113,6 @@ export const createTransformersWorker = <
       }
     })
   }
-  /* eslint-enable sonarjs/cognitive-complexity */
 
   const ensureLoadBeforeProcess = async (options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
     if (options != null && !options?.loadOptions)
