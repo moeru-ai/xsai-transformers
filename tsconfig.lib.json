@@ -1,6 +1,7 @@
 {
   "extends": "@importantimport/tsconfig/app.json",
   "compilerOptions": {
+    "moduleResolution": "bundler",
     "types": [
       "vite/client",
       // @webgpu/types

@@ -25,8 +25,14 @@ export type WorkerMessageEvents<D = undefined, T extends string = string>
   = | LoadMessageEvents<D, T>
     | ProcessMessageEvents<D, T>
 
+export interface WorkerOptions {
+  worker?: Worker
+  workerURL?: string | undefined | URL
+}
+
+/* eslint-disable sonarjs/cognitive-complexity */
 export const createTransformersWorker = <
-  T extends { workerURL: string | undefined | URL },
+  T extends WorkerOptions,
   T2 extends { onProgress?: LoadOptionProgressCallback },
 >(createOptions: T) => {
   let worker: undefined | Worker
@@ -38,8 +44,8 @@ export const createTransformersWorker = <
       throw new Error('Payload is required')
 
     return new Promise<void>((resolve, reject) => {
-      if (!createOptions.workerURL)
-        throw new Error('Worker URL is required')
+      if (!createOptions.worker && !createOptions.workerURL)
+        throw new Error('Either worker or workerURL is required')
 
       if (isReady) {
         resolve()
@@ -54,19 +60,24 @@ export const createTransformersWorker = <
         }
 
         if (!isLoading && !isReady && !worker) {
-          let workerURLString: null | string
-          if (createOptions.workerURL instanceof URL) {
-            const workerURL = new URL(createOptions.workerURL)
-            workerURLString = workerURL.searchParams.get('worker-url')
+          if (createOptions.worker) {
+            worker = createOptions.worker
           }
           else {
-            workerURLString = createOptions.workerURL
-          }
-          if (!workerURLString)
-            throw new Error('Worker URL is required')
+            let workerURLString: null | string
+            if (createOptions.workerURL instanceof URL) {
+              const workerURL = new URL(createOptions.workerURL)
+              workerURLString = workerURL.searchParams.get('worker-url')
+            }
+            else {
+              workerURLString = createOptions.workerURL ?? null
+            }
+            if (!workerURLString)
+              throw new Error('Worker URL is required')
 
-          if (!worker)
             worker = new Worker(workerURLString, { type: 'module' })
+          }
+
           if (!worker)
             throw new Error('Worker not initialized')
 
@@ -103,6 +114,7 @@ export const createTransformersWorker = <
       }
     })
   }
+  /* eslint-enable sonarjs/cognitive-complexity */
 
   const ensureLoadBeforeProcess = async (options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
     if (options != null && !options?.loadOptions)

@@ -8,6 +8,11 @@ export enum MessageStatus {
 
 export type { ProgressInfo }
 
+export interface EmbedProviderOptions {
+  baseURL?: string
+  worker?: Worker
+}
+
 export interface Extract {
   options?: FeatureExtractionPipelineOptions
   text: string | string[]
