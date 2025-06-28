@@ -1,5 +1,5 @@
 import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
-import type { CreateProviderOptions, EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
+import type { EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { EmbedResponse } from '@xsai/embed'
 import type { CommonRequestOptions } from '@xsai/shared'
@@ -7,7 +7,7 @@ import type { CommonRequestOptions } from '@xsai/shared'
 import { merge } from '@moeru/std/merge'
 import { createTransformersWorker } from '@xsai-transformers/shared/worker'
 
-import type { Extract, ExtractResult, Load } from './types'
+import type { EmbedProviderOptions, Extract, ExtractResult, Load } from './types'
 
 export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
   loadEmbed: (model: (string & {}) | T, options?: T2) => Promise<void>
@@ -17,17 +17,27 @@ export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
 export const createEmbedProvider = <
   T extends string,
   T2 extends LoadOptions<FeatureExtractionPipelineOptions> & Omit<CommonRequestOptions, 'baseURL' | 'model'>,
->(createOptions: CreateProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> => {
-  if (!createOptions.baseURL) {
-    throw new Error('baseURL is required')
+>(createOptions: EmbedProviderOptions): LoadableEmbedProvider<EmbedProviderWithExtraOptions<T, T2>, T, T2> => {
+  // If worker is provided directly, use it; otherwise extract from baseURL
+  let workerOptions: { worker?: Worker, workerURL?: string | URL }
+
+  if (createOptions.worker) {
+    workerOptions = { worker: createOptions.worker }
+  }
+  else {
+    if (!createOptions.baseURL) {
+      throw new Error('baseURL is required when worker is not provided')
+    }
+
+    const workerURL = new URL(createOptions.baseURL).searchParams.get('worker-url')
+    if (!workerURL) {
+      throw new Error('worker-url is required when worker is not provided')
+    }
+
+    workerOptions = { workerURL }
   }
 
-  const workerURL = new URL(createOptions.baseURL).searchParams.get('worker-url')
-  if (!workerURL) {
-    throw new Error('worker-url is required')
-  }
-
-  const worker = createTransformersWorker({ workerURL })
+  const worker = createTransformersWorker(workerOptions)
   const loadEmbed = async (model: (string & {}) | T, options?: T2) => {
     let onProgress: LoadOptionProgressCallback | undefined
     if (options && 'onProgress' in options && typeof options.onProgress === 'function') {
