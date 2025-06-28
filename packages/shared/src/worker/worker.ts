@@ -43,6 +43,7 @@ export const createTransformersWorker = <
       throw new Error('Payload is required')
 
     return new Promise<void>((resolve, reject) => {
+      /* eslint-disable sonarjs/cognitive-complexity */
       if (!createOptions.worker && !createOptions.workerURL)
         throw new Error('Either worker or workerURL is required')
 
