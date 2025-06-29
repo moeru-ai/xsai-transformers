@@ -239,7 +239,7 @@ export class VAD {
 
     // Create the final buffer with padding
     const prevLength = this.prevBuffers.reduce((acc, b) => acc + b.length, 0)
-    const finalBuffer = Float32Array.from(Array.from({ length: prevLength + this.bufferPointer + speechPadSamples }))
+    const finalBuffer = Float32Array.from(Array.from({ length: prevLength + this.bufferPointer }))
 
     // Add previous buffers for pre-speech padding
     let offset = 0
@@ -249,12 +249,16 @@ export class VAD {
     }
 
     // Add the main speech segment
-    finalBuffer.set(this.buffer.slice(0, this.bufferPointer + speechPadSamples), offset)
+    finalBuffer.set(this.buffer.slice(0, this.bufferPointer), offset)
+
+    // Add post-speech padding
+    const paddedBuffer = Float32Array.from(Array.from({ length: finalBuffer.length + speechPadSamples }))
+    paddedBuffer.set(finalBuffer, 0)
 
     // Emit the speech segment
     this.emit('speech-end', undefined)
     this.emit('speech-ready', {
-      buffer: finalBuffer,
+      buffer: paddedBuffer,
       duration,
     })
 
