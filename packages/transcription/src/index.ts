@@ -67,7 +67,7 @@ export const createTranscriptionProvider
         // TODO: GenerateTranscriptionResult should be typed based on options
         const result: GenerateTranscriptionResult = {
           duration: 0, // Not supported yet
-          language: res.output.language, // Not supported yet
+          language: options?.language ?? '', // Reflect the language used from options
           segments: [], // Not supported yet
           text: res.output.text,
           words: [], // Not supported yet

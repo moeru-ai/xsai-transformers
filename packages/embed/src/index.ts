@@ -60,7 +60,7 @@ export const createEmbedProvider = <
         try {
           body = JSON.parse(initBody)
         } catch (e) {
-          // ignore
+          console.error('Failed to parse request body, falling back to default. Error:', e);
         }
         text = body.input || ''
         delete body.input
