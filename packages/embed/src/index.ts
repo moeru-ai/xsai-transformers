@@ -56,7 +56,12 @@ export const createEmbedProvider = <
 
         let text: string = ''
         const initBody = init.body?.toString() || '{}'
-        const body: LoadOptions<FeatureExtractionPipelineOptions> & { input?: string } = JSON.parse(initBody)
+        let body: LoadOptions<FeatureExtractionPipelineOptions> & { input?: string } = {}
+        try {
+          body = JSON.parse(initBody)
+        } catch (e) {
+          // ignore
+        }
         text = body.input || ''
         delete body.input
         delete body.onProgress
