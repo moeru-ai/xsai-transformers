@@ -66,11 +66,11 @@ export const createTranscriptionProvider
 
         // TODO: GenerateTranscriptionResult should be typed based on options
         const result: GenerateTranscriptionResult = {
-          duration: undefined as never,
-          language: undefined as never,
-          segments: undefined as never,
+          duration: 0, // Not supported yet
+          language: res.output.language, // Not supported yet
+          segments: [], // Not supported yet
           text: res.output.text,
-          words: undefined as never,
+          words: [], // Not supported yet
         }
 
         const encoder = new TextEncoder()
