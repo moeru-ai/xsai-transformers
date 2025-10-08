@@ -13,24 +13,18 @@ export interface EmbedProviderOptions {
   worker?: Worker
 }
 
-export interface Extract {
+export interface EmbedWorkerParams {
   options?: FeatureExtractionPipelineOptions
   text: string | string[]
 }
 
-export interface ExtractResult {
-  input: {
-    options?: FeatureExtractionPipelineOptions
-    text: string | string[]
-  }
-  output: {
-    data: number[]
-    dims: number[]
-  }
+export interface EmbedWorkerResults {
+  data: number[]
+  dims: number[]
 }
 
-export interface Load<T = FeatureExtractionPipelineOptions> {
+export interface LoadParams<T = FeatureExtractionPipelineOptions> {
   modelId: string
   options?: LoadOptions<T>
-  task: string
+  task: 'feature-extraction'
 }

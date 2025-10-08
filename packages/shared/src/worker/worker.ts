@@ -1,33 +1,61 @@
-import type { ProgressInfo } from '@huggingface/transformers'
+import { readableStreamToAsyncIterator } from '@moeru/std/async-iterator'
+import { defineInvoke, defineStreamInvoke } from '@unbird/eventa'
+import { createContext } from '@unbird/eventa/adapters/webworkers'
 
 import type { LoadOptionProgressCallback } from '../types'
+import type { LoadMessageEvents } from './events'
 
-export type ErrorMessageEvents<E = unknown>
-  = | WorkerMessageEvent<{ error?: E, message?: string }, 'error'>
-
-export type LoadMessageEvents<D = undefined, T extends string = string, E = unknown>
-  = | ErrorMessageEvents<E>
-    | WorkerMessageEvent<D, T>
-    | WorkerMessageEvent<{ message: string }, 'info'>
-    | WorkerMessageEvent<{ message?: string, status: 'loading' | 'ready' }, 'status'>
-    | WorkerMessageEvent<{ progress: ProgressInfo }, 'progress'>
-
-export type ProcessMessageEvents<D = unknown, T = unknown, E = unknown>
-  = | ErrorMessageEvents<E>
-    | WorkerMessageEvent<D, T>
-
-export interface WorkerMessageEvent<D, T> {
-  data: D
-  type: T
-}
-
-export type WorkerMessageEvents<D = undefined, T extends string = string>
-  = | LoadMessageEvents<D, T>
-    | ProcessMessageEvents<D, T>
+import { createLoadDefinition, createProcessDefinition } from './rpc'
 
 export interface WorkerOptions {
   worker?: Worker
   workerURL?: string | undefined | URL
+}
+
+function getOnProgress(optionsMayHaveOnProgress?: null | { onProgress?: LoadOptionProgressCallback | null }): LoadOptionProgressCallback | undefined {
+  if (optionsMayHaveOnProgress == null)
+    return undefined
+  if (typeof optionsMayHaveOnProgress !== 'object') {
+    return undefined
+  }
+  if (typeof optionsMayHaveOnProgress.onProgress !== 'function') {
+    return undefined
+  }
+
+  const onProgress = optionsMayHaveOnProgress.onProgress
+  delete optionsMayHaveOnProgress.onProgress
+
+  return onProgress
+}
+
+function getWorker(optionsMayHaveWorkerOrWorkerURL?: null | { worker?: null | Worker, workerURL?: null | string | URL }): Worker {
+  if (optionsMayHaveWorkerOrWorkerURL == null)
+    throw new TypeError('Either worker or workerURL is required')
+  if (typeof optionsMayHaveWorkerOrWorkerURL !== 'object')
+    throw new TypeError('Either worker or workerURL is required')
+
+  if (optionsMayHaveWorkerOrWorkerURL.worker != null)
+    return optionsMayHaveWorkerOrWorkerURL.worker
+
+  if (optionsMayHaveWorkerOrWorkerURL.workerURL != null) {
+    let workerURLString: null | string
+
+    if (optionsMayHaveWorkerOrWorkerURL.workerURL instanceof URL) {
+      workerURLString = optionsMayHaveWorkerOrWorkerURL.workerURL.searchParams.get('worker-url')
+    }
+    else if (typeof optionsMayHaveWorkerOrWorkerURL.workerURL === 'string') {
+      workerURLString = optionsMayHaveWorkerOrWorkerURL.workerURL
+    }
+    else {
+      throw new TypeError('Worker URL is required')
+    }
+    if (!workerURLString)
+      throw new TypeError('Worker URL is required')
+
+    return new Worker(workerURLString, { type: 'module' })
+  }
+
+  throw new TypeError('Either worker or workerURL is required')
 }
 
 export const createTransformersWorker = <
@@ -35,84 +63,41 @@ export const createTransformersWorker = <
   T2 extends { onProgress?: LoadOptionProgressCallback },
 >(createOptions: T) => {
   let worker: undefined | Worker
+  let workerContext: ReturnType<typeof createContext>['context'] | undefined
+
   let isReady = false
   let isLoading = false
 
-  const load = async <D = unknown, E extends WorkerMessageEvent<D, string> = WorkerMessageEvent<D, string>>(payload?: E, options?: T2) => {
+  const load = async <Params>(payload?: Params, options?: T2) => {
     if (!payload)
       throw new Error('Payload is required')
+    if (isReady) {
+      return
+    }
 
-    /* eslint-disable sonarjs/cognitive-complexity */
-    return new Promise<void>((resolve, reject) => {
-      if (!createOptions.worker && !createOptions.workerURL)
-        throw new Error('Either worker or workerURL is required')
+    try {
+      if (!isLoading && !isReady && !worker) {
+        worker = getWorker(createOptions)
+        workerContext = createContext(worker).context
 
-      if (isReady) {
-        resolve()
-        return
-      }
+        const onProgress = getOnProgress(options)
+        const load = defineStreamInvoke(workerContext, createLoadDefinition<Params>())
+        const loading = readableStreamToAsyncIterator(load(payload))
 
-      try {
-        let onProgress: LoadOptionProgressCallback | undefined
-        if (options?.onProgress != null) {
-          onProgress = options?.onProgress
-          delete options?.onProgress
-        }
-
-        if (!isLoading && !isReady && !worker) {
-          if (createOptions.worker) {
-            worker = createOptions.worker
+        for await (const loadEvent of loading) {
+          if (onProgress && loadEvent.data && loadEvent.type === 'progress') {
+            onProgress(loadEvent.data.progress)
           }
-          else {
-            let workerURLString: null | string
-            if (createOptions.workerURL instanceof URL) {
-              const workerURL = new URL(createOptions.workerURL)
-              workerURLString = workerURL.searchParams.get('worker-url')
-            }
-            else {
-              workerURLString = createOptions.workerURL ?? null
-            }
-            if (!workerURLString)
-              throw new Error('Worker URL is required')
-
-            worker = new Worker(workerURLString, { type: 'module' })
-          }
-
-          if (!worker)
-            throw new Error('Worker not initialized')
-
-          worker.postMessage(payload)
-
-          worker.addEventListener('message', (event: MessageEvent<E>) => {
-            switch (event.data.type) {
-              case 'error':
-                isLoading = false
-                reject((event.data.data as { error?: unknown }).error)
-                break
-              case 'progress':
-                if (onProgress != null && typeof onProgress === 'function') {
-                  onProgress((event.data.data as unknown as { progress: ProgressInfo }).progress)
-                }
-
-                break
-            }
-          })
         }
-
-        worker!.addEventListener('message', (event: MessageEvent<E>) => {
-          if (event.data.type !== 'status' || (event.data.data as unknown as { status: 'loading' | 'ready' }).status !== 'ready')
-            return
-
-          isReady = true
-          isLoading = false
-          resolve()
-        })
       }
-      catch (err) {
-        isLoading = false
-        reject(err)
-      }
-    })
+
+      isReady = true
+      isLoading = false
+    }
+    catch (err) {
+      isLoading = false
+      throw err
+    }
   }
 
   const ensureLoadBeforeProcess = async (options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
@@ -120,43 +105,15 @@ export const createTransformersWorker = <
       await load(options?.loadOptions?.payload, options?.loadOptions?.options)
   }
 
-  const process = <ID = unknown, OD = unknown, E extends { data: ID, type: string } = { data: any, type: string }>(payload: E, onResultType: string, options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
-    return new Promise<OD>((resolve, reject) => {
-      ensureLoadBeforeProcess(options).then(() => {
-        if (!worker || !isReady) {
-          reject(new Error('Model not loaded'))
-          return
-        }
+  const process = async <Params, Results>(payload: Params, onResultType: string, options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
+    await ensureLoadBeforeProcess(options)
+    if (!worker || !isReady) {
+      throw new Error('Model not loaded')
+    }
 
-        // eslint-disable-next-line sonarjs/no-nested-functions
-        worker.addEventListener('error', (event: ErrorEvent) => {
-          reject(event)
-        })
-
-        let errored = false
-        let resultDone = false
-
-        // eslint-disable-next-line sonarjs/no-nested-functions
-        worker.addEventListener('message', (event: MessageEvent<{ data: OD, type: string }>) => {
-          switch (event.data.type) {
-            case 'error':
-              errored = true
-              reject((event.data.data as unknown as { error?: unknown })?.error)
-              break
-            case onResultType:
-              resultDone = true
-              resolve(event.data.data)
-              break
-            default:
-              break
-          }
-        })
-
-        if (!errored && !resultDone) {
-          worker?.postMessage(payload)
-        }
-      })
-    })
+    const processDefinition = createProcessDefinition<Params, Results>(onResultType)
+    const process = defineInvoke(workerContext!, processDefinition)
+    return process(payload)
   }
 
   return {

@@ -181,11 +181,11 @@ importers:
         specifier: ^3.7.5
         version: 3.7.5
       '@moeru/std':
-        specifier: 0.1.0-beta.1
-        version: 0.1.0-beta.1
+        specifier: ^0.1.0-beta.10
+        version: 0.1.0-beta.10
       '@unbird/eventa':
-        specifier: ^0.1.4
-        version: 0.1.4(web-worker@1.5.0)
+        specifier: ^0.1.5
+        version: 0.1.5(web-worker@1.5.0)
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.4.0-beta.4
@@ -210,6 +210,12 @@ importers:
       '@huggingface/transformers':
         specifier: ^3.7.5
         version: 3.7.5
+      '@moeru/std':
+        specifier: 0.1.0-beta.10
+        version: 0.1.0-beta.10
+      '@unbird/eventa':
+        specifier: ^0.1.5
+        version: 0.1.5(web-worker@1.5.0)
       '@xsai-ext/shared-providers':
         specifier: 'catalog:'
         version: 0.4.0-beta.4
@@ -959,6 +965,9 @@ packages:
   '@moeru/std@0.1.0-beta.1':
     resolution: {integrity: sha512-ImfoMBchZP+F4aos2nFmlcipcgIhT+ZkUUVWB/bBHEqyB/w/nbI/xgA8a1ibJUtG7RcQnQH+SKom0r4/1xCWqA==}
 
+  '@moeru/std@0.1.0-beta.10':
+    resolution: {integrity: sha512-dFTptg/pB4AVmNiPvZQh/NKNIbEw37uY8qEGUPlmsVchkyDZJvBkmWBBJy9bFMLDYblZT5DIspCq7EOIRA0NpA==}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1327,8 +1336,8 @@ packages:
     resolution: {integrity: sha512-FrvMpAK+hTbFy7vH5j1+tMYHMSKLE6RzluFJlkFNKD0p9YsUT75JlBSmr5so3QRzvMwU5/bIEdeNrxm8du8l3Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@unbird/eventa@0.1.4':
-    resolution: {integrity: sha512-CY7K8OHWWQCVTLolqWNKNIYEMn4q88/hCtwbV/NEHNs41RkqJd6QzoskfC77K3oXJS1byne71OdT5nJPRtIMvw==}
+  '@unbird/eventa@0.1.5':
+    resolution: {integrity: sha512-TUwa8EFWnhWtEAugiiPDXM/3ccS1lcYNo2WzLhc9dHq4PhrQtUFshrWjnrPTsgtHt0/TbiOmTXKjQIdHAw9zCw==}
     peerDependencies:
       electron: '>=30'
       h3: 2.0.0-beta.1
@@ -4604,6 +4613,8 @@ snapshots:
 
   '@moeru/std@0.1.0-beta.1': {}
 
+  '@moeru/std@0.1.0-beta.10': {}
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -4935,7 +4946,7 @@ snapshots:
       '@typescript-eslint/types': 8.46.0
       eslint-visitor-keys: 4.2.1
 
-  '@unbird/eventa@0.1.4(web-worker@1.5.0)':
+  '@unbird/eventa@0.1.5(web-worker@1.5.0)':
     dependencies:
       nanoid: 5.1.6
       picomatch: 4.0.3

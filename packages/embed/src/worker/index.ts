@@ -1,61 +1,45 @@
-/* eslint-disable no-restricted-globals */
-import type { FeatureExtractionPipeline, FeatureExtractionPipelineOptions } from '@huggingface/transformers'
+import type { FeatureExtractionPipeline } from '@huggingface/transformers'
 import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
-import type { LoadMessageEvents, ProcessMessageEvents, WorkerMessageEvent } from '@xsai-transformers/shared/worker'
 
 import { pipeline } from '@huggingface/transformers'
 import { merge } from '@moeru/std/merge'
+import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@unbird/eventa'
+import { createContext } from '@unbird/eventa/adapters/webworkers/worker'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
-import type { Extract, Load } from '../types'
-
+import { extract, load } from '../shared'
 import { MessageStatus } from '../types'
+
+const { context } = createContext()
 
 // eslint-disable-next-line @masknet/no-top-level
 let embed: FeatureExtractionPipeline
 
-const extract = async (text: string | string[], options?: FeatureExtractionPipelineOptions) => {
+// eslint-disable-next-line @masknet/no-top-level
+defineInvokeHandler(context, extract, async ({ options, text }) => {
   const result = await embed(text, options)
   const resultArray = result.tolist()
-  self.postMessage({ data: { input: { options, text }, output: { data: Array.from(resultArray[0] || []), dims: result.dims } }, type: 'extractResult' } satisfies ProcessMessageEvents)
-}
-
-const load = async (modelId: string, options?: Omit<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>, 'progress_callback'>) => {
-  try {
-    const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
-
-    const opts = merge<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>>({
-      device,
-      progress_callback: (progress) => {
-        self.postMessage({ data: { progress }, type: 'progress' } satisfies LoadMessageEvents)
-      },
-    }, options)
-
-    self.postMessage({ data: { message: `Using device: "${device}"` }, type: 'info' } satisfies LoadMessageEvents)
-    self.postMessage({ data: { message: 'Loading models...' }, type: 'info' } satisfies LoadMessageEvents)
-
-    // eslint-disable-next-line ts/ban-ts-comment
-    // @ts-ignore - TS2590: Expression produces a union type that is too complex to represent.
-    embed = await pipeline('feature-extraction', modelId, opts)
-
-    self.postMessage({ data: { message: 'Ready!', status: MessageStatus.Ready }, type: 'status' } satisfies LoadMessageEvents)
-  }
-  catch (err) {
-    self.postMessage({ data: { error: err }, type: 'error' } satisfies LoadMessageEvents)
-    throw err
-  }
-}
+  const embedding: number[] = Array.from(resultArray[0] || [])
+  return { data: embedding, dims: result.dims }
+})
 
 // eslint-disable-next-line @masknet/no-top-level
-self.addEventListener('message', (event: MessageEvent<WorkerMessageEvent<Extract, 'extract'> | WorkerMessageEvent<Load, 'load'>>) => {
-  const { type } = event.data
+defineStreamInvokeHandler(context, load, toStreamHandler(async ({ emit, payload: { modelId, options } }) => {
+  const device = (await isWebGPUSupported()) ? 'webgpu' : 'wasm'
 
-  switch (type) {
-    case 'extract':
-      extract(event.data.data.text, event.data.data.options)
-      break
-    case 'load':
-      load(event.data.data.modelId, event.data.data.options)
-      break
-  }
-})
+  const opts = merge<PipelineOptionsFrom<typeof pipeline<'feature-extraction'>>>({
+    device,
+    progress_callback: (p) => {
+      emit({ data: { progress: p }, type: 'progress' })
+    },
+  }, options)
+
+  emit({ data: { message: `Using device: "${device}"` }, type: 'info' })
+  emit({ data: { message: 'Loading models...' }, type: 'info' })
+
+  // eslint-disable-next-line ts/ban-ts-comment
+  // @ts-ignore - TS2590: Expression produces a union type that is too complex to represent.
+  embed = await pipeline('feature-extraction', modelId, opts)
+
+  emit({ data: { message: 'Ready!', status: MessageStatus.Ready }, type: 'status' })
+}))

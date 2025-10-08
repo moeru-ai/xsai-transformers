@@ -7,7 +7,7 @@ import type { CommonRequestOptions } from '@xsai/shared'
 import { merge } from '@moeru/std/merge'
 import { createTransformersWorker } from '@xsai-transformers/shared/worker'
 
-import type { EmbedProviderOptions, Extract, ExtractResult, Load } from './types'
+import type { EmbedProviderOptions, EmbedWorkerParams, EmbedWorkerResults } from './types'
 
 export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
   loadEmbed: (model: (string & {}) | T, options?: T2) => Promise<void>
@@ -45,30 +45,26 @@ export const createEmbedProvider = <
       delete options.onProgress
     }
 
-    return worker.load<Load>({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' }, { onProgress })
+    await worker.load({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' }, { onProgress })
   }
+
   const terminateEmbed = () => worker.dispose()
 
   return {
     embed: (model, options) => Object.assign(createOptions, {
       fetch: async (_: any, init: RequestInit) => {
-        await loadEmbed(model)
+        await loadEmbed(model, { onProgress: options?.onProgress } as LoadOptions<any>)
 
         let text: string = ''
         const initBody = init.body?.toString() || '{}'
         const body: LoadOptions<FeatureExtractionPipelineOptions> & { input?: string } = JSON.parse(initBody)
         text = body.input || ''
-        delete body.input
-        delete body.onProgress
 
         const processOptions = merge<LoadOptions<FeatureExtractionPipelineOptions>>({ normalize: true, pooling: 'mean' }, options)
+        const res = await worker.process<EmbedWorkerParams, EmbedWorkerResults>({ options: processOptions, text }, 'extract')
 
-        const res = await worker.process<Extract, ExtractResult>({
-          data: { options: processOptions, text },
-          type: 'extract',
-        }, 'extractResult')
         const result: EmbedResponse = {
-          data: [{ embedding: res.output.data, index: 0, object: 'embedding' }],
+          data: [{ embedding: res.data, index: 0, object: 'embedding' }],
           model,
           object: 'list',
           usage: { prompt_tokens: 0, total_tokens: 0 },
