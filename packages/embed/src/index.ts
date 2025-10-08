@@ -45,7 +45,7 @@ export const createEmbedProvider = <
       delete options.onProgress
     }
 
-    await worker.load({ data: { modelId: model, options, task: 'feature-extraction' }, type: 'load' }, { onProgress })
+    await worker.load({ modelId: model, options, task: 'feature-extraction' }, { onProgress })
   }
 
   const terminateEmbed = () => worker.dispose()

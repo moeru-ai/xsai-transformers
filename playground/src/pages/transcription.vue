@@ -10,7 +10,7 @@ import transcribeWorkerURL from 'xsai-transformers/transcription/worker?worker&u
 import Record from '../components/AudioRecord.vue'
 import Progress from '../components/Progress.vue'
 
-const modelId = ref('onnx-community/whisper-large-v3-turbo')
+const modelId = ref('onnx-community/whisper-base-ONNX')
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
 const loadingItemsSet = new Set<string>()
 const input = ref<File>()

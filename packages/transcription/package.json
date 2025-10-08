@@ -55,6 +55,7 @@
   "dependencies": {
     "@huggingface/transformers": "^3.7.5",
     "@moeru/std": "0.1.0-beta.1",
+    "@unbird/eventa": "^0.1.5",
     "@xsai-ext/shared-providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",

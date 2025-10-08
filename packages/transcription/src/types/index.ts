@@ -1,29 +1,33 @@
-import type { LoadOptionProgressCallback, ModelSpecificPretrainedOptions, PretrainedOptions, ProgressInfo } from '@xsai-transformers/shared/types'
+import type { pipeline } from '@huggingface/transformers'
+import type { CreateProviderOptions } from '@xsai-ext/shared-providers'
+import type { LoadOptions, PipelineOptionsFrom, ProgressInfo } from '@xsai-transformers/shared/types'
 
 export enum MessageStatus {
   Loading = 'loading',
   Ready = 'ready',
 }
 
-export interface Load {
+export interface LoadParams<T = PipelineOptionsFrom<typeof pipeline<'automatic-speech-recognition'>>> {
   modelId: string
-  options?: LoadOptions
+  options?: LoadOptions<T>
   task: string
 }
 
-export type LoadOptions = Omit<ModelSpecificPretrainedOptions & PretrainedOptions, 'progress_callback'> & { language?: string } & { onProgress?: LoadOptionProgressCallback }
+export interface TranscriptionProviderOptions extends Omit<CreateProviderOptions, 'baseURL'> {
+  baseURL?: string
+  worker?: Worker
+}
+
 export type { ProgressInfo }
 
-export interface Transcribe {
+export interface TranscriptionWorkerParams {
   /**
    * Base64 encoded audio data.
    */
   audio: string
-  options: { language: string }
+  options?: { language?: string }
 }
 
-export interface TranscribeResult {
-  output: {
-    text: string
-  }
+export interface TranscriptionWorkerResults {
+  text: string
 }
