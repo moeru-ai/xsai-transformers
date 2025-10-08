@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/shared",
   "type": "module",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
