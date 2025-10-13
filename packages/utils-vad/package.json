@@ -59,6 +59,6 @@
     "@xsai/embed": "catalog:",
     "@xsai/generate-transcription": "catalog:",
     "@xsai/shared": "catalog:",
-    "gpuu": "^1.0.5"
+    "gpuu": "^1.0.6"
   }
 }

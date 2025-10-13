@@ -60,6 +60,6 @@
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",
-    "gpuu": "^1.0.5"
+    "gpuu": "^1.0.6"
   }
 }

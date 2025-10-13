@@ -61,6 +61,6 @@
     "@xsai/shared": "catalog:",
     "@xsai/stream-object": "catalog:",
     "@xsai/stream-text": "catalog:",
-    "gpuu": "^1.0.5"
+    "gpuu": "^1.0.6"
   }
 }
