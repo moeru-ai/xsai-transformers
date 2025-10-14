@@ -17,4 +17,13 @@ export default defineConfig({
     // see uno.config.ts for config
     Unocss(),
   ],
+  resolve: {
+    alias: {
+      '@xsai-transformers/chat': resolve(import.meta.dirname, '..', 'packages', 'chat', 'src'),
+      '@xsai-transformers/embed': resolve(import.meta.dirname, '..', 'packages', 'embed', 'src'),
+      '@xsai-transformers/speech': resolve(import.meta.dirname, '..', 'packages', 'speech', 'src'),
+      '@xsai-transformers/transcription': resolve(import.meta.dirname, '..', 'packages', 'transcription', 'src'),
+      'xsai-transformers': resolve(import.meta.dirname, '..', 'packages-top', 'xsai-transformers', 'src'),
+    },
+  },
 })

@@ -1,3 +1,4 @@
 import type { pipeline } from '@huggingface/transformers'
 
-export type DType = Record<string, Exclude<NonNullable<Required<Parameters<typeof pipeline>>[2]['dtype']>, string>[string]>
+export type DType = DTypeItem | Record<string, DTypeItem>
+export type DTypeItem = Exclude<NonNullable<Required<Parameters<typeof pipeline>>[2]['dtype']>, string>[string]

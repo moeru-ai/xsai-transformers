@@ -22,10 +22,14 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@xsai-transformers/chat": "workspace:^",
     "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/transcription": "workspace:^",
     "@xsai-transformers/utils-vad": "workspace:^",
+    "@xsai/generate-text": "catalog:",
     "@xsai/generate-transcription": "catalog:",
+    "@xsai/shared-chat": "catalog:",
+    "@xsai/stream-text": "catalog:",
     "xsai-transformers": "workspace:^"
   },
   "devDependencies": {
