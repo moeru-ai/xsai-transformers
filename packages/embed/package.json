@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/embed",
   "type": "module",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Transformers.js wrapper makes it easy to use with xsai",
   "author": {
     "name": "Moeru AI",
