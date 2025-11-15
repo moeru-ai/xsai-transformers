@@ -1,4 +1,4 @@
-import { defineInvokeEventa } from '@unbird/eventa'
+import { defineInvokeEventa } from '@moeru/eventa'
 
 import type { LoadMessageEvents } from './events'
 

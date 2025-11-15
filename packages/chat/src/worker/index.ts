@@ -4,9 +4,9 @@ import type { GenerateTextResponse } from '@xsai/generate-text'
 import type { AssistantMessage } from '@xsai/shared-chat'
 
 import { pipeline } from '@huggingface/transformers'
+import { defineInvokeHandler, defineStreamInvokeHandler, nanoid, toStreamHandler } from '@moeru/eventa'
+import { createContext } from '@moeru/eventa/adapters/webworkers/worker'
 import { merge } from '@moeru/std/merge'
-import { defineInvokeHandler, defineStreamInvokeHandler, nanoid, toStreamHandler } from '@unbird/eventa'
-import { createContext } from '@unbird/eventa/adapters/webworkers/worker'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import { chatCompletion, load } from '../shared'

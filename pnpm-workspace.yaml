@@ -4,20 +4,20 @@ packages:
   - playground
 
 catalog:
-  '@xsai-ext/providers-cloud': ^0.4.0-beta.4
-  '@xsai-ext/providers-local': ^0.4.0-beta.4
-  '@xsai-ext/shared-providers': ^0.4.0-beta.4
-  '@xsai/embed': ^0.4.0-beta.4
-  '@xsai/generate-object': ^0.4.0-beta.4
-  '@xsai/generate-speech': ^0.4.0-beta.4
+  '@xsai-ext/providers-cloud': ^0.4.0-beta.9
+  '@xsai-ext/providers-local': ^0.4.0-beta.9
+  '@xsai-ext/shared-providers': ^0.4.0-beta.9
+  '@xsai/embed': ^0.4.0-beta.9
+  '@xsai/generate-object': ^0.4.0-beta.9
+  '@xsai/generate-speech': ^0.4.0-beta.9
   '@xsai/generate-text': 0.4.0-beta.4
-  '@xsai/generate-transcription': ^0.4.0-beta.4
-  '@xsai/model': ^0.4.0-beta.4
-  '@xsai/shared': ^0.4.0-beta.4
+  '@xsai/generate-transcription': ^0.4.0-beta.9
+  '@xsai/model': ^0.4.0-beta.9
+  '@xsai/shared': ^0.4.0-beta.9
   '@xsai/shared-chat': 0.4.0-beta.4
-  '@xsai/stream-object': ^0.4.0-beta.4
+  '@xsai/stream-object': ^0.4.0-beta.9
   '@xsai/stream-text': 0.4.0-beta.4
-  '@xsai/tool': ^0.4.0-beta.4
-  '@xsai/utils-chat': ^0.4.0-beta.4
-  xsai: ^0.4.0-beta.4
-  xsschema: ^0.4.0-beta.4
+  '@xsai/tool': ^0.4.0-beta.9
+  '@xsai/utils-chat': ^0.4.0-beta.9
+  xsai: ^0.4.0-beta.9
+  xsschema: ^0.4.0-beta.9

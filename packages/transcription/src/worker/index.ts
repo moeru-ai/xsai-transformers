@@ -9,10 +9,10 @@ import {
   pipeline,
   TextStreamer,
 } from '@huggingface/transformers'
+import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@moeru/eventa'
+import { createContext } from '@moeru/eventa/adapters/webworkers/worker'
 import { decodeBase64 } from '@moeru/std/base64'
 import { merge } from '@moeru/std/merge'
-import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@unbird/eventa'
-import { createContext } from '@unbird/eventa/adapters/webworkers/worker'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import { load, transcribe } from '../shared'

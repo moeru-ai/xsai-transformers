@@ -1,6 +1,6 @@
+import { defineInvoke, defineStreamInvoke } from '@moeru/eventa'
+import { createContext } from '@moeru/eventa/adapters/webworkers'
 import { readableStreamToAsyncIterator } from '@moeru/std/async-iterator'
-import { defineInvoke, defineStreamInvoke } from '@unbird/eventa'
-import { createContext } from '@unbird/eventa/adapters/webworkers'
 
 import type { LoadOptionProgressCallback } from '../types'
 import type { LoadMessageEvents } from './events'

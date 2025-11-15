@@ -2,9 +2,9 @@ import type { FeatureExtractionPipeline } from '@huggingface/transformers'
 import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 
 import { pipeline } from '@huggingface/transformers'
+import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@moeru/eventa'
+import { createContext } from '@moeru/eventa/adapters/webworkers/worker'
 import { merge } from '@moeru/std/merge'
-import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@unbird/eventa'
-import { createContext } from '@unbird/eventa/adapters/webworkers/worker'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
 import { extract, load } from '../shared'
