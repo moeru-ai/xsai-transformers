@@ -24,29 +24,32 @@ const MAX_NEW_TOKENS = 64
 // eslint-disable-next-line @masknet/no-top-level
 let asr: AutomaticSpeechRecognitionPipeline
 
+const isWavFormat = (bytes: Uint8Array): boolean => {
+  // Check for RIFF header at offset 0 and WAVE format at offset 8
+  return bytes.length > 44
+    && bytes[0] === 0x52 && bytes[1] === 0x49 // RI
+    && bytes[2] === 0x46 && bytes[3] === 0x46 // FF
+    && bytes[8] === 0x57 && bytes[9] === 0x41 // WA
+    && bytes[10] === 0x56 && bytes[11] === 0x45 // VE
+}
+
 const base64ToFeatures = async (base64Audio: string): Promise<Float32Array> => {
   // Decode base64 to binary
   const bytes = decodeBase64(base64Audio)
 
-  let samples: Int16Array
+  // Determine the raw PCM data range based on actual format detection
+  const pcmBuffer = isWavFormat(bytes)
+    ? bytes.buffer.slice(44) // Strip 44-byte WAV header
+    : bytes.buffer
 
-  // byte length of Int16Array should be a multiple of 2
-  if (bytes.length % 2 !== 0) {
-    // @ts-expect-error - ArrayBufferLike is absolutely Iterable<number>
-    samples = Int16Array.from(bytes.buffer.slice(44))
-  }
-  else {
-    // @ts-expect-error - ArrayBufferLike is absolutely Iterable<number>
-    samples = Int16Array.from(bytes.buffer)
-  }
+  // Ensure byte length is even for Int16Array alignment
+  const alignedLength = pcmBuffer.byteLength - (pcmBuffer.byteLength % 2)
+
+  // @ts-expect-error - ArrayBufferLike is absolutely Iterable<number>
+  const samples: Int16Array = Int16Array.from(pcmBuffer.slice(0, alignedLength))
 
   // Convert to Float32Array and normalize to [-1, 1]
-  const audio = Float32Array.from(Array.from({ length: samples.length }))
-  for (let i = 0; i < samples.length; i++) {
-    audio[i] = samples[i] / 32768.0
-  }
-
-  return audio
+  return Float32Array.from(samples, s => s / 32768.0)
 }
 
 // eslint-disable-next-line @masknet/no-top-level
