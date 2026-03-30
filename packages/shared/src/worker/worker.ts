@@ -77,6 +77,7 @@ export const createTransformersWorker = <
 
     try {
       if (!isLoading && !isReady && !worker) {
+        isLoading = true
         worker = getWorker(createOptions)
         workerContext = createContext(worker).context
 
@@ -101,8 +102,8 @@ export const createTransformersWorker = <
   }
 
   const ensureLoadBeforeProcess = async (options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
-    if (options != null && !options?.loadOptions)
-      await load(options?.loadOptions?.payload, options?.loadOptions?.options)
+    if (options?.loadOptions)
+      await load(options.loadOptions.payload, options.loadOptions.options)
   }
 
   const process = async <Params, Results>(payload: Params, onResultType: string, options?: T2 & { loadOptions?: { options?: T2, payload: LoadMessageEvents<any, string> } }) => {
