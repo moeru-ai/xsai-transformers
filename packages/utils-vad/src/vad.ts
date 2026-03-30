@@ -187,7 +187,7 @@ export class VAD {
   private async detectSpeech(buffer: Float32Array): Promise<boolean> {
     const input = new Tensor('float32', buffer, [1, buffer.length])
 
-    this.inferenceChain = this.inferenceChain.then(() =>
+    this.inferenceChain = this.inferenceChain.catch(() => {}).then(() =>
       this.model({
         input,
         sr: this.sampleRateTensor,
@@ -239,7 +239,8 @@ export class VAD {
 
     // Create the final buffer with padding
     const prevLength = this.prevBuffers.reduce((acc, b) => acc + b.length, 0)
-    const finalBuffer = Float32Array.from(Array.from({ length: prevLength + this.bufferPointer + speechPadSamples }))
+    const clampedEnd = Math.min(this.bufferPointer + speechPadSamples, this.buffer.length)
+    const finalBuffer = Float32Array.from(Array.from({ length: prevLength + clampedEnd }))
 
     // Add previous buffers for pre-speech padding
     let offset = 0
@@ -249,7 +250,7 @@ export class VAD {
     }
 
     // Add the main speech segment
-    finalBuffer.set(this.buffer.slice(0, this.bufferPointer + speechPadSamples), offset)
+    finalBuffer.set(this.buffer.subarray(0, clampedEnd), offset)
 
     // Emit the speech segment
     this.emit('speech-end', undefined)
