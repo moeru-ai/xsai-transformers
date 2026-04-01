@@ -1,7 +1,7 @@
 {
   "name": "@xsai-transformers/root",
   "type": "module",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.22.0",
   "repository": "github:moeru-ai/xsai-transformers",
@@ -54,6 +54,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "onnxruntime-node",
+      "protobufjs",
       "sharp",
       "simple-git-hooks",
       "unrs-resolver"
