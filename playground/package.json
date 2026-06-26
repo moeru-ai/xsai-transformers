@@ -43,7 +43,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vueuse/core": "^14.0.0",
     "@webgpu/types": "^0.1.66",
-    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-ext/providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:",

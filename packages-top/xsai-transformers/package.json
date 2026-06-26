@@ -62,7 +62,7 @@
     }
   },
   "dependencies": {
-    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-ext/providers": "catalog:",
     "@xsai-transformers/chat": "workspace:^",
     "@xsai-transformers/embed": "workspace:^",
     "@xsai-transformers/shared": "workspace:^",

@@ -1,5 +1,5 @@
 import type { pipeline } from '@huggingface/transformers'
-import type { TranscriptionProviderWithExtraOptions } from '@xsai-ext/shared-providers'
+import type { TranscriptionProviderWithExtraOptions } from '@xsai-ext/providers/utils'
 import type { LoadOptionProgressCallback, LoadOptions, PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 import type { GenerateTranscriptionResult } from '@xsai/generate-transcription'
 import type { CommonRequestOptions } from '@xsai/shared'

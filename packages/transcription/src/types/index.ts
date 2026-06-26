@@ -1,5 +1,5 @@
 import type { pipeline } from '@huggingface/transformers'
-import type { CreateProviderOptions } from '@xsai-ext/shared-providers'
+import type { CreateProviderOptions } from '@xsai-ext/providers/utils'
 import type { LoadOptions, PipelineOptionsFrom, ProgressInfo } from '@xsai-transformers/shared/types'
 
 export enum MessageStatus {

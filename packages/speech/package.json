@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",
-    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-ext/providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/embed": "catalog:",
     "@xsai/shared": "catalog:"
