@@ -56,7 +56,7 @@
     "@huggingface/transformers": "^3.7.6",
     "@moeru/eventa": "^0.3.0",
     "@moeru/std": "^0.1.0-beta.13",
-    "@xsai-ext/shared-providers": "catalog:",
+    "@xsai-ext/providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",
     "@xsai/generate-object": "catalog:",
     "@xsai/generate-text": "catalog:",

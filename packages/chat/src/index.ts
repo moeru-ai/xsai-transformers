@@ -1,4 +1,4 @@
-import type { ChatProviderWithExtraOptions } from '@xsai-ext/shared-providers'
+import type { ChatProviderWithExtraOptions } from '@xsai-ext/providers/utils'
 import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { CommonRequestOptions } from '@xsai/shared'
 import type { ChatOptions } from '@xsai/shared-chat'

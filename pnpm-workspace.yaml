@@ -4,9 +4,7 @@ packages:
   - playground
 
 catalog:
-  '@xsai-ext/providers-cloud': ^0.4.0-beta.9
-  '@xsai-ext/providers-local': ^0.4.0-beta.9
-  '@xsai-ext/shared-providers': ^0.4.0-beta.9
+  '@xsai-ext/providers': ^0.4.4
   '@xsai/embed': ^0.4.0-beta.9
   '@xsai/generate-object': ^0.4.0-beta.9
   '@xsai/generate-speech': ^0.4.0-beta.9

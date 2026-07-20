@@ -1,5 +1,5 @@
 import type { pipeline } from '@huggingface/transformers'
-import type { CreateProviderOptions } from '@xsai-ext/shared-providers'
+import type { CreateProviderOptions } from '@xsai-ext/providers/utils'
 import type { LoadOptions, PipelineOptionsFrom, PipelineSelfOptionsFrom, ProgressInfo } from '@xsai-transformers/shared/types'
 import type { GenerateTextResponse } from '@xsai/generate-text'
 import type { ChatOptions } from '@xsai/shared-chat'
