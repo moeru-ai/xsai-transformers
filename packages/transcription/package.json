@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@huggingface/transformers": "^3.7.6",
-    "@moeru/eventa": "^0.3.0",
+    "@moeru/eventa": "^1.0.2",
     "@moeru/std": "^0.1.0-beta.13",
     "@xsai-ext/providers": "catalog:",
     "@xsai-transformers/shared": "workspace:^",

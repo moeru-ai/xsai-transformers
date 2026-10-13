@@ -151,8 +151,8 @@ importers:
         specifier: ^3.7.6
         version: 3.7.6
       '@moeru/eventa':
-        specifier: ^0.3.0
-        version: 0.3.0(web-worker@1.5.0)
+        specifier: ^1.0.2
+        version: 1.0.2(web-worker@1.5.0)
       '@moeru/std':
         specifier: ^0.1.0-beta.13
         version: 0.1.0-beta.13
@@ -193,8 +193,8 @@ importers:
         specifier: ^3.7.6
         version: 3.7.6
       '@moeru/eventa':
-        specifier: ^0.3.0
-        version: 0.3.0(web-worker@1.5.0)
+        specifier: ^1.0.2
+        version: 1.0.2(web-worker@1.5.0)
       '@moeru/std':
         specifier: ^0.1.0-beta.13
         version: 0.1.0-beta.13
@@ -223,8 +223,8 @@ importers:
         specifier: ^3.7.6
         version: 3.7.6
       '@moeru/eventa':
-        specifier: ^0.3.0
-        version: 0.3.0(web-worker@1.5.0)
+        specifier: ^1.0.2
+        version: 1.0.2(web-worker@1.5.0)
       '@moeru/std':
         specifier: ^0.1.0-beta.13
         version: 0.1.0-beta.13
@@ -265,8 +265,8 @@ importers:
         specifier: ^3.7.6
         version: 3.7.6
       '@moeru/eventa':
-        specifier: ^0.3.0
-        version: 0.3.0(web-worker@1.5.0)
+        specifier: ^1.0.2
+        version: 1.0.2(web-worker@1.5.0)
       '@moeru/std':
         specifier: ^0.1.0-beta.13
         version: 0.1.0-beta.13
@@ -985,16 +985,22 @@ packages:
     peerDependencies:
       eslint: '>= 8'
 
-  '@moeru/eventa@0.3.0':
-    resolution: {integrity: sha512-/U9BNwd+a3OAlbolkW4yWbKtbtL2poiu0V44yekV31SKOAGy9NZJe6hmAAr5nwwDO5Iu6uK/Kz/l+3maEwsUnQ==}
+  '@moeru/eventa@1.0.2':
+    resolution: {integrity: sha512-GlgLTPxVN9A/1lxlAktB/zyjPZc4i6YFYbd6YHY+0dsoOPAjofzV+hzqtKCAzIEZ90waZ5OgiVFlkqcA0lzdkg==}
     peerDependencies:
-      electron: '>=30'
-      h3: 2.0.0-beta.1
+      '@tauri-apps/api': '>=2'
+      electron: '>=39'
+      h3: '>=2.0.1-rc.22'
+      hono: '>=4.12.25'
       web-worker: ^1.5.0
     peerDependenciesMeta:
+      '@tauri-apps/api':
+        optional: true
       electron:
         optional: true
       h3:
+        optional: true
+      hono:
         optional: true
       web-worker:
         optional: true
@@ -3146,9 +3152,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.6:
-    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
-    engines: {node: ^18 || >=20}
+  nanoid@6.0.2:
+    resolution: {integrity: sha512-hIvVOb9Qr1p/9CNNLOe0OlWvgx/ziTsVwKN/GDSsuArN2K0wDiafP3s0SWmsm7o2BdnyS8Z9Z64NFBUbn6ziBg==}
+    engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -3332,6 +3338,10 @@ packages:
 
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
+    engines: {node: '>=12'}
+
+  picomatch@4.0.7:
+    resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
   pidtree@0.6.0:
@@ -4617,10 +4627,10 @@ snapshots:
     dependencies:
       eslint: 9.39.1(jiti@2.6.1)
 
-  '@moeru/eventa@0.3.0(web-worker@1.5.0)':
+  '@moeru/eventa@1.0.2(web-worker@1.5.0)':
     dependencies:
-      nanoid: 5.1.6
-      picomatch: 4.0.3
+      nanoid: 6.0.2
+      picomatch: 4.0.7
     optionalDependencies:
       web-worker: 1.5.0
 
@@ -7229,7 +7239,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanoid@5.1.6: {}
+  nanoid@6.0.2: {}
 
   natural-compare@1.4.0: {}
 
@@ -7410,6 +7420,8 @@ snapshots:
   picomatch@2.3.1: {}
 
   picomatch@4.0.3: {}
+
+  picomatch@4.0.7: {}
 
   pidtree@0.6.0: {}
 
